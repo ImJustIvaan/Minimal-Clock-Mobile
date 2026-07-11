@@ -1,0 +1,38 @@
+name: Build Unsigned iOS IPA
+
+# Builds an UNSIGNED .ipa. This will not install via Xcode, TestFlight, or
+# any tool that checks Apple's code signature. It's meant to be signed on
+# your own machine afterward with a free Apple ID, using a sideloading tool
+# like AltStore/AltServer or Sideloadly.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build-unsigned-ipa:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build unsigned iOS app
+        run: flutter build ios --release --no-codesign
+
+      - name: Package into IPA
+        run: |
+          mkdir -p build/ios/ipa/Payload
+          cp -r build/ios/iphoneos/Runner.app build/ios/ipa/Payload/
+          cd build/ios/ipa
+          zip -r MinimalClock-unsigned.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MinimalClock-unsigned-ipa
+          path: build/ios/ipa/MinimalClock-unsigned.ipa
