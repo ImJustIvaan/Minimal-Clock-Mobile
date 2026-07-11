@@ -62,7 +62,11 @@ class _ClockScreenState extends ConsumerState<ClockScreen> {
             ? settings.clockFontSize * 1.6
             : settings.clockFontSize;
 
-        return Scaffold(
+        // Custom digit display, not scrollable text — ignore the system's
+        // accessibility text size so it can't blow out the fixed layout.
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+          child: Scaffold(
           body: SafeArea(
             child: Center(
               child: Padding(
@@ -125,6 +129,7 @@ class _ClockScreenState extends ConsumerState<ClockScreen> {
                 ),
               ),
             ),
+          ),
           ),
         );
       },

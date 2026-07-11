@@ -36,6 +36,15 @@ class _DurationPickerState extends State<DurationPicker> {
     final color = Theme.of(context).colorScheme.onSurface;
     final isTablet = MediaQuery.of(context).size.width >= 600;
     final scale = isTablet ? 1.5 : 1.0;
+    // This is a fixed-size digit wheel, not scrollable text — ignore the
+    // system's accessibility text size so digits can't clip their cells.
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+      child: _buildContent(context, color, scale),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, Color color, double scale) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

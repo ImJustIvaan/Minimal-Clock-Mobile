@@ -108,7 +108,9 @@ class _CountdownDetailScreenState
             final isOwner = userId != null && userId == countdown.ownerId;
             final notify = followAsync.valueOrNull?.notify ?? false;
 
-            return Padding(
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+              child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -185,6 +187,7 @@ class _CountdownDetailScreenState
                     ),
                   ),
                 ],
+              ),
               ),
             );
           },
