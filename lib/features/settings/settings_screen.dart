@@ -96,6 +96,13 @@ class _SettingsBody extends ConsumerWidget {
                     onChanged: (v) => update(settings.copyWith(keepScreenAwake: v)),
                   ),
                 ]),
+                _Section(label: 'NOTIFICATIONS', children: [
+                  _SwitchRow(
+                    label: 'Hourly Notifier',
+                    value: settings.hourlyNotifier,
+                    onChanged: (v) => update(settings.copyWith(hourlyNotifier: v)),
+                  ),
+                ]),
                 _Section(label: 'CREDITS', children: const [
                   _LinkRow(
                     label: 'Made By @ImJustIvaan (a.k.a Ivaan S)',

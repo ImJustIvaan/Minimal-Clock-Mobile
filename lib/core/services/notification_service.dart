@@ -117,6 +117,38 @@ class NotificationService {
     await _plugin.cancel(_timerNotificationId);
   }
 
+  static const _hourlyNotifierId = 1;
+
+  /// Uses the OS's own repeating-notification support (not a live in-app
+  /// Timer) so it keeps firing every hour even while the app is backgrounded
+  /// or not running at all.
+  Future<void> setHourlyNotifierEnabled(bool enabled) async {
+    if (!enabled) {
+      await _plugin.cancel(_hourlyNotifierId);
+      return;
+    }
+    const androidDetails = AndroidNotificationDetails(
+      'hourly_channel',
+      'Hourly Notifier',
+      channelDescription: "Notifies you every hour on the hour",
+      importance: Importance.defaultImportance,
+      priority: Priority.defaultPriority,
+    );
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+    await _plugin.periodicallyShow(
+      _hourlyNotifierId,
+      'Minimal Clock',
+      "It's the top of the hour.",
+      RepeatInterval.hourly,
+      const NotificationDetails(android: androidDetails, iOS: iosDetails),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    );
+  }
+
   /// Deterministic int id for a countdown's notification, stable across
   /// app restarts/platforms (Dart's String.hashCode is not guaranteed to be).
   int _countdownNotificationId(String countdownId) {

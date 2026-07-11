@@ -8,6 +8,7 @@ class AppSettings {
   final bool showWeekday;
   final double clockFontSize;
   final bool keepScreenAwake;
+  final bool hourlyNotifier;
 
   const AppSettings({
     this.themeMode = ThemeMode.system,
@@ -17,6 +18,7 @@ class AppSettings {
     this.showWeekday = true,
     this.clockFontSize = 72,
     this.keepScreenAwake = false,
+    this.hourlyNotifier = false,
   });
 
   AppSettings copyWith({
@@ -27,6 +29,7 @@ class AppSettings {
     bool? showWeekday,
     double? clockFontSize,
     bool? keepScreenAwake,
+    bool? hourlyNotifier,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -36,6 +39,7 @@ class AppSettings {
       showWeekday: showWeekday ?? this.showWeekday,
       clockFontSize: clockFontSize ?? this.clockFontSize,
       keepScreenAwake: keepScreenAwake ?? this.keepScreenAwake,
+      hourlyNotifier: hourlyNotifier ?? this.hourlyNotifier,
     );
   }
 
@@ -47,6 +51,7 @@ class AppSettings {
         'showWeekday': showWeekday,
         'clockFontSize': clockFontSize,
         'keepScreenAwake': keepScreenAwake,
+        'hourlyNotifier': hourlyNotifier,
       };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) => AppSettings(
@@ -57,5 +62,6 @@ class AppSettings {
         showWeekday: json['showWeekday'] as bool? ?? true,
         clockFontSize: (json['clockFontSize'] as num?)?.toDouble() ?? 72,
         keepScreenAwake: json['keepScreenAwake'] as bool? ?? false,
+        hourlyNotifier: json['hourlyNotifier'] as bool? ?? false,
       );
 }
