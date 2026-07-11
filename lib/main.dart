@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/providers/settings_provider.dart';
+import 'core/services/deep_link_service.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/supabase_service.dart';
 import 'core/theme/app_theme.dart';
 import 'shared/widgets/app_shell.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +24,8 @@ void main() async {
   await NotificationService.instance.init();
 
   runApp(const ProviderScope(child: MinimumClockApp()));
+
+  DeepLinkService.instance.init(navigatorKey);
 }
 
 class MinimumClockApp extends ConsumerWidget {
@@ -41,6 +46,7 @@ class MinimumClockApp extends ConsumerWidget {
                   : AppTheme.light(),
       duration: const Duration(milliseconds: 300),
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         title: 'Minimal Clock',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),

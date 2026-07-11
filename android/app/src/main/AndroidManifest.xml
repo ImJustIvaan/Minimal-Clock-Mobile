@@ -38,6 +38,12 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="minimalclock" android:host="login-callback"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="minimalclock" android:host="countdown"/>
+            </intent-filter>
         </activity>
         <!-- flutter_local_notifications -->
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"/>
