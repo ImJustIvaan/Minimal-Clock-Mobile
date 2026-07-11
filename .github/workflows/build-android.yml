@@ -1,0 +1,43 @@
+name: Build Android APK & AAB
+
+# Release builds are signed with the debug keystore (see android/app/build.gradle),
+# so the APK installs directly on a device with no extra signing setup. The AAB
+# is the same signing but in Play Store's upload format, in case that's ever needed.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Build release AAB
+        run: flutter build appbundle --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MinimalClock-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MinimalClock-aab
+          path: build/app/outputs/bundle/release/app-release.aab
