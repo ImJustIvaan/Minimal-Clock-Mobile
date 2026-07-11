@@ -128,16 +128,22 @@ class NotificationService {
       return;
     }
     const androidDetails = AndroidNotificationDetails(
-      'hourly_channel',
+      // New channel id: Android notification channels are immutable once
+      // created, so changing the sound on the existing 'hourly_channel'
+      // wouldn't take effect on devices that already created it.
+      'hourly_channel_v2',
       'Hourly Notifier',
       channelDescription: "Notifies you every hour on the hour",
       importance: Importance.defaultImportance,
       priority: Priority.defaultPriority,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound('gong'),
     );
     const iosDetails = DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
       presentSound: true,
+      sound: 'gong.caf',
     );
     await _plugin.periodicallyShow(
       _hourlyNotifierId,
