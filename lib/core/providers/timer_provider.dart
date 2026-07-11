@@ -45,22 +45,26 @@ class TimerNotifier extends Notifier<TimerState> {
     if (state.remaining == Duration.zero) return;
     state = state.copyWith(status: TimerStatus.running);
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+    NotificationService.instance.scheduleTimerNotification(state.remaining);
   }
 
   void pause() {
     _ticker?.cancel();
     state = state.copyWith(status: TimerStatus.paused);
+    NotificationService.instance.cancelTimerNotification();
   }
 
   void resume() {
     state = state.copyWith(status: TimerStatus.running);
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+    NotificationService.instance.scheduleTimerNotification(state.remaining);
   }
 
   void reset() {
     _ticker?.cancel();
     state = TimerState(
         total: state.total, remaining: state.total, status: TimerStatus.idle);
+    NotificationService.instance.cancelTimerNotification();
   }
 
   void _tick() {
@@ -68,7 +72,12 @@ class TimerNotifier extends Notifier<TimerState> {
       _ticker?.cancel();
       state = state.copyWith(
           remaining: Duration.zero, status: TimerStatus.finished);
-      NotificationService.instance.showTimerFinished();
+      // The OS-scheduled notification (from start/resume) covers the case
+      // where the app was backgrounded; fire immediately too so it's exact
+      // when the app is still in the foreground at this instant.
+      NotificationService.instance
+        ..cancelTimerNotification()
+        ..showTimerFinished();
     } else {
       state = state.copyWith(
           remaining: state.remaining - const Duration(seconds: 1));

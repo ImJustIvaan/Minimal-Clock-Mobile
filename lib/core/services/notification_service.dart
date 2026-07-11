@@ -51,6 +51,8 @@ class NotificationService {
     }
   }
 
+  static const _timerNotificationId = 0;
+
   Future<void> showTimerFinished() async {
     const androidDetails = AndroidNotificationDetails(
       'timer_channel',
@@ -68,11 +70,51 @@ class NotificationService {
       presentSound: true,
     );
     await _plugin.show(
-      0,
+      _timerNotificationId,
       'Minimal Clock',
       'Timer Finished',
       const NotificationDetails(android: androidDetails, iOS: iosDetails),
     );
+  }
+
+  /// Pre-schedules the timer-finished alert with the OS, so it still fires
+  /// if the app gets backgrounded/suspended before the countdown reaches
+  /// zero (a plain in-app Timer stops advancing once iOS suspends the app).
+  Future<void> scheduleTimerNotification(Duration remaining) async {
+    await cancelTimerNotification();
+    if (remaining <= Duration.zero) return;
+    final scheduled = tz.TZDateTime.now(tz.local).add(remaining);
+
+    const androidDetails = AndroidNotificationDetails(
+      'timer_channel',
+      'Timer',
+      channelDescription: 'Timer finished notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
+      fullScreenIntent: true,
+    );
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    await _plugin.zonedSchedule(
+      _timerNotificationId,
+      'Minimal Clock',
+      'Timer Finished',
+      scheduled,
+      const NotificationDetails(android: androidDetails, iOS: iosDetails),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  }
+
+  Future<void> cancelTimerNotification() async {
+    await _plugin.cancel(_timerNotificationId);
   }
 
   /// Deterministic int id for a countdown's notification, stable across

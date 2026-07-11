@@ -65,6 +65,7 @@ class _AuthScreenState extends State<AuthScreen> {
     try {
       await SupabaseService.client.auth.signInWithOtp(
         email: _emailCtrl.text.trim(),
+        emailRedirectTo: 'minimalclock://login-callback',
       );
       setState(() => _info = 'Check your email for a sign-in link.');
     } on AuthException catch (e) {
@@ -85,7 +86,7 @@ class _AuthScreenState extends State<AuthScreen> {
     try {
       await SupabaseService.client.auth.signInWithOAuth(
         OAuthProvider.google,
-        redirectTo: 'io.minimalclock.app://login-callback',
+        redirectTo: 'minimalclock://login-callback',
       );
     } catch (e) {
       setState(() => _error = 'Google sign-in failed.');
