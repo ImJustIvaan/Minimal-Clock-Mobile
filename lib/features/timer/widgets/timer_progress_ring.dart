@@ -22,7 +22,9 @@ class TimerProgressRing extends StatelessWidget {
     final ringSize = screenWidth >= 600 ? 380.0 : 260.0;
     final timeFontSize = screenWidth >= 600 ? 64.0 : 48.0;
     final finFontSize = screenWidth >= 600 ? 40.0 : 28.0;
-    return SizedBox(
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
+      child: SizedBox(
       width: ringSize,
       height: ringSize,
       child: Stack(
@@ -60,6 +62,7 @@ class TimerProgressRing extends StatelessWidget {
             ],
           ),
         ],
+      ),
       ),
     );
   }
