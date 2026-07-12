@@ -1,17 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/providers/settings_provider.dart';
 import '../../core/providers/timer_provider.dart';
 import 'widgets/duration_picker.dart';
 import 'widgets/timer_progress_ring.dart';
+import 'widgets/until_time_picker.dart';
 
-class TimerScreen extends ConsumerWidget {
+enum _TimerInputMode { duration, until }
+
+class TimerScreen extends ConsumerStatefulWidget {
   const TimerScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TimerScreen> createState() => _TimerScreenState();
+}
+
+class _TimerScreenState extends ConsumerState<TimerScreen> {
+  _TimerInputMode _mode = _TimerInputMode.duration;
+  TimeOfDay _untilTime = TimeOfDay.now();
+
+  void _start(TimerNotifier notifier) {
+    if (_mode == _TimerInputMode.until) {
+      final now = DateTime.now();
+      var target = DateTime(now.year, now.month, now.day, _untilTime.hour, _untilTime.minute);
+      if (!target.isAfter(now)) {
+        target = target.add(const Duration(days: 1));
+      }
+      notifier.setDuration(target.difference(now));
+    }
+    notifier.start();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(timerProvider);
     final notifier = ref.read(timerProvider.notifier);
     final color = Theme.of(context).colorScheme.onSurface;
+    final is24Hour = ref.watch(settingsProvider).valueOrNull?.use24Hour ?? false;
+    final isIdle = state.status == TimerStatus.idle;
 
     return Scaffold(
       body: SafeArea(
@@ -20,26 +46,114 @@ class TimerScreen extends ConsumerWidget {
           child: Column(
             children: [
               const Spacer(flex: 2),
+              if (isIdle) ...[
+                _ModeToggle(
+                  mode: _mode,
+                  color: color,
+                  onChanged: (m) => setState(() => _mode = m),
+                ),
+                const SizedBox(height: 24),
+              ],
               // Progress ring + time display
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
-                child: state.status == TimerStatus.idle
-                    ? DurationPicker(
-                        key: const ValueKey('picker'),
-                        onChanged: (d) => notifier.setDuration(d),
-                        initial: state.total,
-                      )
-                    : TimerProgressRing(
+                child: !isIdle
+                    ? TimerProgressRing(
                         key: const ValueKey('ring'),
                         state: state,
                         color: color,
-                      ),
+                      )
+                    : _mode == _TimerInputMode.duration
+                        ? DurationPicker(
+                            key: const ValueKey('picker'),
+                            onChanged: (d) => notifier.setDuration(d),
+                            initial: state.total,
+                          )
+                        : UntilTimePicker(
+                            key: const ValueKey('until'),
+                            initial: _untilTime,
+                            is24Hour: is24Hour,
+                            onChanged: (t) => setState(() => _untilTime = t),
+                          ),
               ),
               const Spacer(flex: 2),
               // Control buttons
-              _Controls(state: state, notifier: notifier),
+              _Controls(state: state, notifier: notifier, onStart: () => _start(notifier)),
               const SizedBox(height: 48),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ModeToggle extends StatelessWidget {
+  final _TimerInputMode mode;
+  final Color color;
+  final ValueChanged<_TimerInputMode> onChanged;
+
+  const _ModeToggle({required this.mode, required this.color, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _ModeButton(
+            label: 'Duration',
+            selected: mode == _TimerInputMode.duration,
+            color: color,
+            onTap: () => onChanged(_TimerInputMode.duration),
+          ),
+          _ModeButton(
+            label: 'Until Time',
+            selected: mode == _TimerInputMode.until,
+            color: color,
+            onTap: () => onChanged(_TimerInputMode.until),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ModeButton extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ModeButton({
+    required this.label,
+    required this.selected,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected ? color : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: selected ? Theme.of(context).colorScheme.surface : color.withOpacity(0.6),
           ),
         ),
       ),
@@ -50,8 +164,9 @@ class TimerScreen extends ConsumerWidget {
 class _Controls extends StatelessWidget {
   final TimerState state;
   final TimerNotifier notifier;
+  final VoidCallback onStart;
 
-  const _Controls({required this.state, required this.notifier});
+  const _Controls({required this.state, required this.notifier, required this.onStart});
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +186,7 @@ class _Controls extends StatelessWidget {
         ],
         _CircleButton(
           icon: _primaryIcon(state.status),
-          onTap: () => _primaryAction(state.status, notifier),
+          onTap: () => _primaryAction(state.status, notifier, onStart),
           color: color,
           size: 72,
           iconColor: Theme.of(context).colorScheme.surface,
@@ -93,10 +208,10 @@ class _Controls extends StatelessWidget {
     }
   }
 
-  void _primaryAction(TimerStatus s, TimerNotifier n) {
+  void _primaryAction(TimerStatus s, TimerNotifier n, VoidCallback onStart) {
     switch (s) {
       case TimerStatus.idle:
-        n.start();
+        onStart();
       case TimerStatus.running:
         n.pause();
       case TimerStatus.paused:
