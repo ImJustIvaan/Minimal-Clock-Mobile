@@ -117,14 +117,26 @@ class NotificationService {
     await _plugin.cancel(_timerNotificationId);
   }
 
-  static const _hourlyNotifierId = 1;
+  // 24 ids reserved, one per hour-of-day slot (see setHourlyNotifierEnabled).
+  static const _hourlyNotifierBaseId = 2000;
+  static const _legacyHourlyNotifierId = 1;
 
-  /// Uses the OS's own repeating-notification support (not a live in-app
-  /// Timer) so it keeps firing every hour even while the app is backgrounded
-  /// or not running at all.
+  /// Schedules one OS-level notification per hour of the day (each repeating
+  /// daily at that exact hour), rather than a single fixed-interval repeat.
+  ///
+  /// periodicallyShow(RepeatInterval.hourly) fires exactly 1 hour after the
+  /// moment it's enabled and every hour after that — it's never aligned to
+  /// the actual clock hour (e.g. enabling at 2:15 fires at 3:15, 4:15, ...,
+  /// never on the hour). Scheduling 24 daily-recurring notifications, one
+  /// per hour, is what actually gets a genuine "on the hour" chime, and it
+  /// still relies on the OS's own scheduling (not a live Dart Timer), so it
+  /// keeps firing while the app is backgrounded or not running at all.
   Future<void> setHourlyNotifierEnabled(bool enabled) async {
+    await _plugin.cancel(_legacyHourlyNotifierId); // cleanup from the old scheme
     if (!enabled) {
-      await _plugin.cancel(_hourlyNotifierId);
+      for (var h = 0; h < 24; h++) {
+        await _plugin.cancel(_hourlyNotifierBaseId + h);
+      }
       return;
     }
     const androidDetails = AndroidNotificationDetails(
@@ -145,14 +157,22 @@ class NotificationService {
       presentSound: true,
       sound: 'gong.caf',
     );
-    await _plugin.periodicallyShow(
-      _hourlyNotifierId,
-      'Minimal Clock',
-      "It's the top of the hour.",
-      RepeatInterval.hourly,
-      const NotificationDetails(android: androidDetails, iOS: iosDetails),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    );
+    final now = tz.TZDateTime.now(tz.local);
+    for (var h = 0; h < 24; h++) {
+      var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, h);
+      if (!scheduled.isAfter(now)) scheduled = scheduled.add(const Duration(days: 1));
+      await _plugin.zonedSchedule(
+        _hourlyNotifierBaseId + h,
+        'Minimal Clock',
+        "It's the top of the hour.",
+        scheduled,
+        const NotificationDetails(android: androidDetails, iOS: iosDetails),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.time,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+      );
+    }
   }
 
   /// Deterministic int id for a countdown's notification, stable across
