@@ -32,12 +32,17 @@ jobs:
       - name: Build release AAB
         run: flutter build appbundle --release
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: MinimalClock-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+      - name: Rename outputs
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/MinimalClock.apk
+          cp build/app/outputs/bundle/release/app-release.aab build/app/outputs/bundle/release/MinimalClock.aab
 
       - uses: actions/upload-artifact@v4
         with:
-          name: MinimalClock-aab
-          path: build/app/outputs/bundle/release/app-release.aab
+          name: MinimalClock.apk
+          path: build/app/outputs/flutter-apk/MinimalClock.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MinimalClock.aab
+          path: build/app/outputs/bundle/release/MinimalClock.aab
