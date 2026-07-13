@@ -30,9 +30,9 @@ jobs:
           mkdir -p build/ios/ipa/Payload
           cp -r build/ios/iphoneos/Runner.app build/ios/ipa/Payload/
           cd build/ios/ipa
-          zip -r MinimalClock-unsigned.ipa Payload
+          zip -r MinimalClock.ipa Payload
 
       - uses: actions/upload-artifact@v4
         with:
-          name: MinimalClock-unsigned-ipa
-          path: build/ios/ipa/MinimalClock-unsigned.ipa
+          name: MinimalClock.ipa
+          path: build/ios/ipa/MinimalClock.ipa
