@@ -9,19 +9,29 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		23492DA407934AEB3884B582 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 969DE9CEF3F69F9F1192D7FD /* SwiftUI.framework */; };
+		309D8A2540F4A3C574B48090 /* WatchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D3C38D7BDE9508575047A2A /* WatchKit.framework */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
+		369A9064E8A494F55B379DC1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB825C579FD40A0FF0B37F2 /* ContentView.swift */; };
 		37FCEDA04BFCA496C1E1A823 /* MinimalClockWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7BB89EAF78434F7EED9A8930 /* MinimalClockWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		483AFF60AAA63347D7D3F041 /* MinimalClockWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC6F7777B1AC365400D4837 /* MinimalClockWidget.swift */; };
 		5CE62835545407EDB892F0E5 /* gong.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0D1F597F58CD73638A9CF52D /* gong.caf */; };
+		685E1D8752DD958C1BA78D78 /* SupabaseWatchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104BF60E900B7D0EF58E3B6 /* SupabaseWatchService.swift */; };
+		72146D46A9BD67F54644C5F0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75500E6A37FA94756B7A2B81 /* TimerView.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		77D8CF9CE890D7342D1B91C4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11C6CA5AA9B4A04F6716764C /* Foundation.framework */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
 		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
+		85EC1C8D1FD16A2BEF59706A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B3AA60D08293270F8008C33 /* SwiftUI.framework */; };
 		8A0E7FAB7A7D5668C20E6084 /* MinimalClockWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2909E3C771038A6457D133F /* MinimalClockWidgetBundle.swift */; };
+		8DC8B6629DF54327F51354EE /* MinimalClockWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42670F83FB89AB67B4BC0434 /* MinimalClockWatchApp.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		A23773472006D5091BF72F00 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 834EBFD5DC9C943675F0ED7B /* Foundation.framework */; };
+		C7562E6B1D191C048923C79F /* MinimalClockWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 67B57D183AD8A177F63A7FE9 /* MinimalClockWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D468D1AB3481C66D95F3637A /* CountdownsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D06D40A49246784489A8C9 /* CountdownsView.swift */; };
+		E5894803BE84B59C560C6F58 /* PhoneSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54022EC009A804B61EE55242 /* PhoneSyncManager.swift */; };
 		FBD8CC5F496699E997D4762B /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C095F72BC6CD23A4E0CA3F5C /* WidgetKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +43,13 @@
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
 		};
+		71209933F6E3619A5AB97888 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A5B6D23469D34C8D459165BA;
+			remoteInfo = MinimalClockWatch;
+		};
 		F709ACA1C2DBB4C041C5FFCF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
@@ -43,6 +60,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		0FE9A8964DB0AE1F244D1D09 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				C7562E6B1D191C048923C79F /* MinimalClockWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -67,21 +95,29 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0B3AA60D08293270F8008C33 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS26.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		0D1F597F58CD73638A9CF52D /* gong.caf */ = {isa = PBXFileReference; includeInIndex = 1; path = gong.caf; sourceTree = "<group>"; };
+		1104BF60E900B7D0EF58E3B6 /* SupabaseWatchService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupabaseWatchService.swift; sourceTree = "<group>"; };
+		11C6CA5AA9B4A04F6716764C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		3BBF994488A982A5F9B009BA /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		42670F83FB89AB67B4BC0434 /* MinimalClockWatchApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MinimalClockWatchApp.swift; sourceTree = "<group>"; };
+		54022EC009A804B61EE55242 /* PhoneSyncManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhoneSyncManager.swift; sourceTree = "<group>"; };
+		67B57D183AD8A177F63A7FE9 /* MinimalClockWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MinimalClockWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		75500E6A37FA94756B7A2B81 /* TimerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		7BB89EAF78434F7EED9A8930 /* MinimalClockWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MinimalClockWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CC6F7777B1AC365400D4837 /* MinimalClockWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MinimalClockWidget.swift; sourceTree = "<group>"; };
 		834EBFD5DC9C943675F0ED7B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		8D3C38D7BDE9508575047A2A /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS26.0.sdk/System/Library/Frameworks/WatchKit.framework; sourceTree = DEVELOPER_DIR; };
 		969DE9CEF3F69F9F1192D7FD /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
@@ -90,11 +126,24 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9AB825C579FD40A0FF0B37F2 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B3D06D40A49246784489A8C9 /* CountdownsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CountdownsView.swift; sourceTree = "<group>"; };
 		C095F72BC6CD23A4E0CA3F5C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/WidgetKit.framework; sourceTree = DEVELOPER_DIR; };
 		C2909E3C771038A6457D133F /* MinimalClockWidgetBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MinimalClockWidgetBundle.swift; sourceTree = "<group>"; };
+		FC27D8428A71603CC8885509 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		17AF5852C2F6F6CAD2FCFB5F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				77D8CF9CE890D7342D1B91C4 /* Foundation.framework in Frameworks */,
+				309D8A2540F4A3C574B48090 /* WatchKit.framework in Frameworks */,
+				85EC1C8D1FD16A2BEF59706A /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97C146EB1CF9000F007C117D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,12 +173,38 @@
 			path = RunnerTests;
 			sourceTree = "<group>";
 		};
+		516065FCD2073DDAE7427D84 /* watchOS */ = {
+			isa = PBXGroup;
+			children = (
+				11C6CA5AA9B4A04F6716764C /* Foundation.framework */,
+				8D3C38D7BDE9508575047A2A /* WatchKit.framework */,
+				0B3AA60D08293270F8008C33 /* SwiftUI.framework */,
+			);
+			name = watchOS;
+			sourceTree = "<group>";
+		};
 		8EAE7C453577AC0FACB8602C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				E1786D2F2928348FD0DE442F /* iOS */,
+				516065FCD2073DDAE7427D84 /* watchOS */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9687C71B1DC663AC0BE34DAE /* MinimalClockWatch */ = {
+			isa = PBXGroup;
+			children = (
+				42670F83FB89AB67B4BC0434 /* MinimalClockWatchApp.swift */,
+				9AB825C579FD40A0FF0B37F2 /* ContentView.swift */,
+				54022EC009A804B61EE55242 /* PhoneSyncManager.swift */,
+				1104BF60E900B7D0EF58E3B6 /* SupabaseWatchService.swift */,
+				B3D06D40A49246784489A8C9 /* CountdownsView.swift */,
+				75500E6A37FA94756B7A2B81 /* TimerView.swift */,
+				FC27D8428A71603CC8885509 /* Info.plist */,
+			);
+			name = MinimalClockWatch;
+			path = MinimalClockWatch;
 			sourceTree = "<group>";
 		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
@@ -153,6 +228,7 @@
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				8EAE7C453577AC0FACB8602C /* Frameworks */,
 				D5135CEB613876828D8C0BD7 /* MinimalClockWidget */,
+				9687C71B1DC663AC0BE34DAE /* MinimalClockWatch */,
 			);
 			sourceTree = "<group>";
 		};
@@ -162,6 +238,7 @@
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
 				7BB89EAF78434F7EED9A8930 /* MinimalClockWidgetExtension.appex */,
+				67B57D183AD8A177F63A7FE9 /* MinimalClockWatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -251,12 +328,14 @@
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				D668C80DB61179F2986F2FCC /* Embed Foundation Extensions */,
+				0FE9A8964DB0AE1F244D1D09 /* Embed Watch Content */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				D11AFA62279E201CE0371CD5 /* PBXTargetDependency */,
+				EE6DD02145AEDD83362DA2DC /* PBXTargetDependency */,
 			);
 			name = Runner;
 			packageProductDependencies = (
@@ -264,6 +343,23 @@
 			);
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A5B6D23469D34C8D459165BA /* MinimalClockWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3A0C2C2C7C6DAEE25F380524 /* Build configuration list for PBXNativeTarget "MinimalClockWatch" */;
+			buildPhases = (
+				397F1B910C0E0AE1F5EFCAA3 /* Sources */,
+				17AF5852C2F6F6CAD2FCFB5F /* Frameworks */,
+				ED8676125D681D04379BC6A5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MinimalClockWatch;
+			productName = MinimalClockWatch;
+			productReference = 67B57D183AD8A177F63A7FE9 /* MinimalClockWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -305,6 +401,7 @@
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
 				4E8CE257852B224D0F6DC8C7 /* MinimalClockWidgetExtension */,
+				A5B6D23469D34C8D459165BA /* MinimalClockWatch */,
 			);
 		};
 /* End PBXProject section */
@@ -333,6 +430,13 @@
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 				5CE62835545407EDB892F0E5 /* gong.caf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED8676125D681D04379BC6A5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,6 +485,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		397F1B910C0E0AE1F5EFCAA3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DC8B6629DF54327F51354EE /* MinimalClockWatchApp.swift in Sources */,
+				369A9064E8A494F55B379DC1 /* ContentView.swift in Sources */,
+				E5894803BE84B59C560C6F58 /* PhoneSyncManager.swift in Sources */,
+				685E1D8752DD958C1BA78D78 /* SupabaseWatchService.swift in Sources */,
+				D468D1AB3481C66D95F3637A /* CountdownsView.swift in Sources */,
+				72146D46A9BD67F54644C5F0 /* TimerView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97C146EA1CF9000F007C117D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -414,6 +531,12 @@
 			target = 4E8CE257852B224D0F6DC8C7 /* MinimalClockWidgetExtension */;
 			targetProxy = F709ACA1C2DBB4C041C5FFCF /* PBXContainerItemProxy */;
 		};
+		EE6DD02145AEDD83362DA2DC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = MinimalClockWatch;
+			target = A5B6D23469D34C8D459165BA /* MinimalClockWatch */;
+			targetProxy = 71209933F6E3619A5AB97888 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -436,6 +559,47 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		1153DDA7F90ABFE1716E90BC /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MinimalClockWatch/Info.plist;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imjustivaan.MinimalClock.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Profile;
+		};
+		2135B9B411CDDC7477B451A9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MinimalClockWatch/Info.plist;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imjustivaan.MinimalClock.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Debug;
+		};
 		249021D3217E4FDB00AE95B9 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -769,6 +933,27 @@
 			};
 			name = Debug;
 		};
+		E90D42BA072572E44A865A72 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MinimalClockWatch/Info.plist;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imjustivaan.MinimalClock.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -788,6 +973,16 @@
 				331C8088294A63A400263BE5 /* Debug */,
 				331C8089294A63A400263BE5 /* Release */,
 				331C808A294A63A400263BE5 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3A0C2C2C7C6DAEE25F380524 /* Build configuration list for PBXNativeTarget "MinimalClockWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E90D42BA072572E44A865A72 /* Release */,
+				2135B9B411CDDC7477B451A9 /* Debug */,
+				1153DDA7F90ABFE1716E90BC /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -23,6 +23,7 @@ dependencies:
   url_launcher: ^6.3.0
   app_links: ^7.0.0
   google_fonts: ^6.2.1
+  watch_connectivity: ^0.2.9
 
 dev_dependencies:
   flutter_test:
