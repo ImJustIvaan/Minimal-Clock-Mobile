@@ -60,3 +60,41 @@ create policy "Users can delete their own follows"
 create index if not exists countdowns_owner_id_idx on public.countdowns (owner_id);
 create index if not exists countdown_follows_user_id_idx on public.countdown_follows (user_id);
 create index if not exists countdown_follows_countdown_id_idx on public.countdown_follows (countdown_id);
+
+-- Apple TV sign-in pairing: the TV shows a short random code (+ QR code
+-- linking to time.ivaan.cc/pair?code=...). The user opens that link signed
+-- in on their phone/computer, confirms, and the site fills in this row with
+-- their session tokens. The TV polls for that code and picks the tokens up.
+-- The code itself is the capability/secret (like a password-reset link) —
+-- anyone who has it can claim the tokens once, which is why rows expire
+-- quickly and get deleted right after being claimed.
+create table if not exists public.tv_pairing_codes (
+  code text primary key,
+  access_token text,
+  refresh_token text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.tv_pairing_codes enable row level security;
+
+-- Anyone holding the exact code can read/complete that one row (the code
+-- itself, not RLS, is what limits access — same trust model as a
+-- password-reset link). Never exposed via a listing query.
+create policy "Anyone with the code can read that row"
+  on public.tv_pairing_codes for select
+  using (true);
+
+create policy "Signed-in users can create a pairing row"
+  on public.tv_pairing_codes for insert
+  with check (true);
+
+create policy "Signed-in users can fill in their tokens for a pairing row"
+  on public.tv_pairing_codes for update
+  using (true);
+
+create policy "Anyone with the code can delete that row once claimed"
+  on public.tv_pairing_codes for delete
+  using (true);
+
+-- Codes are single-use and short-lived; sweep anything older than 10 minutes.
+create index if not exists tv_pairing_codes_created_at_idx on public.tv_pairing_codes (created_at);

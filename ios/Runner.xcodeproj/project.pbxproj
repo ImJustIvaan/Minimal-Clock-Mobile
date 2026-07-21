@@ -7,14 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05B23438BE91A222D96EEE73 /* MinimalClockTVApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9329B04099DC9D6FBE01138 /* MinimalClockTVApp.swift */; };
+		09DA1A52DB3D94AB2F0C7229 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3939A434D1C19B35C8E61F4 /* ContentView.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		23492DA407934AEB3884B582 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 969DE9CEF3F69F9F1192D7FD /* SwiftUI.framework */; };
+		2E5C593E941F20759BE24380 /* TVSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DE6575908B71EB599831EC /* TVSessionManager.swift */; };
 		309D8A2540F4A3C574B48090 /* WatchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D3C38D7BDE9508575047A2A /* WatchKit.framework */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		369A9064E8A494F55B379DC1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB825C579FD40A0FF0B37F2 /* ContentView.swift */; };
 		37FCEDA04BFCA496C1E1A823 /* MinimalClockWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7BB89EAF78434F7EED9A8930 /* MinimalClockWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		483AFF60AAA63347D7D3F041 /* MinimalClockWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC6F7777B1AC365400D4837 /* MinimalClockWidget.swift */; };
+		4C4B682C3C2F1634A8869C73 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FC536B593961B47CF3C13 /* SettingsView.swift */; };
 		5CE62835545407EDB892F0E5 /* gong.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0D1F597F58CD73638A9CF52D /* gong.caf */; };
 		685E1D8752DD958C1BA78D78 /* SupabaseWatchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104BF60E900B7D0EF58E3B6 /* SupabaseWatchService.swift */; };
 		72146D46A9BD67F54644C5F0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75500E6A37FA94756B7A2B81 /* TimerView.swift */; };
@@ -29,9 +33,16 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		A23773472006D5091BF72F00 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 834EBFD5DC9C943675F0ED7B /* Foundation.framework */; };
+		A484F5E7E4FCF62E097E9591 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071105B93DD8E3A4CFD38F93 /* TimerView.swift */; };
+		BA4534BF7A5EFF429BE2B20B /* SignInQRView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0D6F2B4C6AB2DA957DDCCD /* SignInQRView.swift */; };
 		C7562E6B1D191C048923C79F /* MinimalClockWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 67B57D183AD8A177F63A7FE9 /* MinimalClockWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CCB6D0AF2672C3382D0D2A84 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33B56DC98B3859A641EFC252 /* Foundation.framework */; };
 		D468D1AB3481C66D95F3637A /* CountdownsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D06D40A49246784489A8C9 /* CountdownsView.swift */; };
+		DBB846D96A5DB573CDE59CA9 /* CountdownsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E30BA02BB5C429B7BF7665 /* CountdownsView.swift */; };
+		DD22EB71B9331699F99B8456 /* PairingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F91D65B472A1F1CCC5CD5F2 /* PairingManager.swift */; };
 		E5894803BE84B59C560C6F58 /* PhoneSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54022EC009A804B61EE55242 /* PhoneSyncManager.swift */; };
+		E6D6F2C7D69836A641F7EE7E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 660A6B5E860191BDA770687B /* SwiftUI.framework */; };
+		EF401F604A08322CEE198721 /* SupabaseTVService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF35506C0DF838034A725896 /* SupabaseTVService.swift */; };
 		FBD8CC5F496699E997D4762B /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C095F72BC6CD23A4E0CA3F5C /* WidgetKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -95,18 +106,24 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		071105B93DD8E3A4CFD38F93 /* TimerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
+		09E9D35BE199995BEC7B9DC5 /* MinimalClockTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MinimalClockTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B3AA60D08293270F8008C33 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS26.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		0D1F597F58CD73638A9CF52D /* gong.caf */ = {isa = PBXFileReference; includeInIndex = 1; path = gong.caf; sourceTree = "<group>"; };
+		0F91D65B472A1F1CCC5CD5F2 /* PairingManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PairingManager.swift; sourceTree = "<group>"; };
 		1104BF60E900B7D0EF58E3B6 /* SupabaseWatchService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupabaseWatchService.swift; sourceTree = "<group>"; };
 		11C6CA5AA9B4A04F6716764C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
+		32DE6575908B71EB599831EC /* TVSessionManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TVSessionManager.swift; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		33B56DC98B3859A641EFC252 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		3BBF994488A982A5F9B009BA /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		42670F83FB89AB67B4BC0434 /* MinimalClockWatchApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MinimalClockWatchApp.swift; sourceTree = "<group>"; };
 		54022EC009A804B61EE55242 /* PhoneSyncManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhoneSyncManager.swift; sourceTree = "<group>"; };
+		660A6B5E860191BDA770687B /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS26.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		67B57D183AD8A177F63A7FE9 /* MinimalClockWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MinimalClockWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -116,6 +133,7 @@
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		7BB89EAF78434F7EED9A8930 /* MinimalClockWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MinimalClockWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CC6F7777B1AC365400D4837 /* MinimalClockWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MinimalClockWidget.swift; sourceTree = "<group>"; };
+		83396B12615E600FAE2341C4 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		834EBFD5DC9C943675F0ED7B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		8D3C38D7BDE9508575047A2A /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS26.0.sdk/System/Library/Frameworks/WatchKit.framework; sourceTree = DEVELOPER_DIR; };
 		969DE9CEF3F69F9F1192D7FD /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
@@ -127,10 +145,16 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9AB825C579FD40A0FF0B37F2 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A18FC536B593961B47CF3C13 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		B3939A434D1C19B35C8E61F4 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B3D06D40A49246784489A8C9 /* CountdownsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CountdownsView.swift; sourceTree = "<group>"; };
+		B9329B04099DC9D6FBE01138 /* MinimalClockTVApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MinimalClockTVApp.swift; sourceTree = "<group>"; };
 		C095F72BC6CD23A4E0CA3F5C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/WidgetKit.framework; sourceTree = DEVELOPER_DIR; };
 		C2909E3C771038A6457D133F /* MinimalClockWidgetBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MinimalClockWidgetBundle.swift; sourceTree = "<group>"; };
+		E7E30BA02BB5C429B7BF7665 /* CountdownsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CountdownsView.swift; sourceTree = "<group>"; };
 		FC27D8428A71603CC8885509 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FE0D6F2B4C6AB2DA957DDCCD /* SignInQRView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SignInQRView.swift; sourceTree = "<group>"; };
+		FF35506C0DF838034A725896 /* SupabaseTVService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SupabaseTVService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +165,15 @@
 				77D8CF9CE890D7342D1B91C4 /* Foundation.framework in Frameworks */,
 				309D8A2540F4A3C574B48090 /* WatchKit.framework in Frameworks */,
 				85EC1C8D1FD16A2BEF59706A /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		462EC2D7CD847DECFCCEF1BE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CCB6D0AF2672C3382D0D2A84 /* Foundation.framework in Frameworks */,
+				E6D6F2C7D69836A641F7EE7E /* SwiftUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,6 +198,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0198EB04626C021DF3B7BA4A /* tvOS */ = {
+			isa = PBXGroup;
+			children = (
+				33B56DC98B3859A641EFC252 /* Foundation.framework */,
+				660A6B5E860191BDA770687B /* SwiftUI.framework */,
+			);
+			name = tvOS;
+			sourceTree = "<group>";
+		};
 		331C8082294A63A400263BE5 /* RunnerTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -188,6 +230,7 @@
 			children = (
 				E1786D2F2928348FD0DE442F /* iOS */,
 				516065FCD2073DDAE7427D84 /* watchOS */,
+				0198EB04626C021DF3B7BA4A /* tvOS */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -229,6 +272,7 @@
 				8EAE7C453577AC0FACB8602C /* Frameworks */,
 				D5135CEB613876828D8C0BD7 /* MinimalClockWidget */,
 				9687C71B1DC663AC0BE34DAE /* MinimalClockWatch */,
+				9997E9BE92EFFF192C8E1BCD /* MinimalClockTV */,
 			);
 			sourceTree = "<group>";
 		};
@@ -239,6 +283,7 @@
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
 				7BB89EAF78434F7EED9A8930 /* MinimalClockWidgetExtension.appex */,
 				67B57D183AD8A177F63A7FE9 /* MinimalClockWatch.app */,
+				09E9D35BE199995BEC7B9DC5 /* MinimalClockTV.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -258,6 +303,24 @@
 				0D1F597F58CD73638A9CF52D /* gong.caf */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+		9997E9BE92EFFF192C8E1BCD /* MinimalClockTV */ = {
+			isa = PBXGroup;
+			children = (
+				B9329B04099DC9D6FBE01138 /* MinimalClockTVApp.swift */,
+				B3939A434D1C19B35C8E61F4 /* ContentView.swift */,
+				32DE6575908B71EB599831EC /* TVSessionManager.swift */,
+				FF35506C0DF838034A725896 /* SupabaseTVService.swift */,
+				0F91D65B472A1F1CCC5CD5F2 /* PairingManager.swift */,
+				FE0D6F2B4C6AB2DA957DDCCD /* SignInQRView.swift */,
+				E7E30BA02BB5C429B7BF7665 /* CountdownsView.swift */,
+				071105B93DD8E3A4CFD38F93 /* TimerView.swift */,
+				A18FC536B593961B47CF3C13 /* SettingsView.swift */,
+				83396B12615E600FAE2341C4 /* Info.plist */,
+			);
+			name = MinimalClockTV;
+			path = MinimalClockTV;
 			sourceTree = "<group>";
 		};
 		D5135CEB613876828D8C0BD7 /* MinimalClockWidget */ = {
@@ -362,6 +425,23 @@
 			productReference = 67B57D183AD8A177F63A7FE9 /* MinimalClockWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
+		AB2C53DFBC05B7080D4D555B /* MinimalClockTV */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 005BC0FDEAF00BE6CFC8EFC2 /* Build configuration list for PBXNativeTarget "MinimalClockTV" */;
+			buildPhases = (
+				689BA023A79B71370C5DB5E8 /* Sources */,
+				462EC2D7CD847DECFCCEF1BE /* Frameworks */,
+				4B232B6C607F83AC32D0AAEF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MinimalClockTV;
+			productName = MinimalClockTV;
+			productReference = 09E9D35BE199995BEC7B9DC5 /* MinimalClockTV.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -402,6 +482,7 @@
 				331C8080294A63A400263BE5 /* RunnerTests */,
 				4E8CE257852B224D0F6DC8C7 /* MinimalClockWidgetExtension */,
 				A5B6D23469D34C8D459165BA /* MinimalClockWatch */,
+				AB2C53DFBC05B7080D4D555B /* MinimalClockTV */,
 			);
 		};
 /* End PBXProject section */
@@ -415,6 +496,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		331C807F294A63A400263BE5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4B232B6C607F83AC32D0AAEF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -498,6 +586,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		689BA023A79B71370C5DB5E8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				05B23438BE91A222D96EEE73 /* MinimalClockTVApp.swift in Sources */,
+				09DA1A52DB3D94AB2F0C7229 /* ContentView.swift in Sources */,
+				2E5C593E941F20759BE24380 /* TVSessionManager.swift in Sources */,
+				EF401F604A08322CEE198721 /* SupabaseTVService.swift in Sources */,
+				DD22EB71B9331699F99B8456 /* PairingManager.swift in Sources */,
+				BA4534BF7A5EFF429BE2B20B /* SignInQRView.swift in Sources */,
+				DBB846D96A5DB573CDE59CA9 /* CountdownsView.swift in Sources */,
+				A484F5E7E4FCF62E097E9591 /* TimerView.swift in Sources */,
+				4C4B682C3C2F1634A8869C73 /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97C146EA1CF9000F007C117D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -577,6 +681,54 @@
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
 				WATCHOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Profile;
+		};
+		15E139703972C99D87863BF3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MinimalClockTV/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imjustivaan.MinimalClock.tv;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1E592E84A68A45BB4BE6E7A2 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MinimalClockTV/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imjustivaan.MinimalClock.tv;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Profile;
 		};
@@ -672,6 +824,29 @@
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Profile;
+		};
+		330C486BBE413378D793E3BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MinimalClockTV/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imjustivaan.MinimalClock.tv;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
+			};
+			name = Debug;
 		};
 		331C8088294A63A400263BE5 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -957,6 +1132,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		005BC0FDEAF00BE6CFC8EFC2 /* Build configuration list for PBXNativeTarget "MinimalClockTV" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				15E139703972C99D87863BF3 /* Release */,
+				330C486BBE413378D793E3BC /* Debug */,
+				1E592E84A68A45BB4BE6E7A2 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		03463E089AB9B245A720168D /* Build configuration list for PBXNativeTarget "MinimalClockWidgetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -1,0 +1,26 @@
+name: Build tvOS App
+
+# Builds the standalone MinimalClockTV target for the Simulator SDK, which
+# needs no code signing/provisioning — this only verifies it compiles.
+# There's no free sideloading path for tvOS (unlike AltStore/Sideloadly for
+# iOS), so getting this onto an actual Apple TV still needs Xcode + either a
+# paid developer account or a directly-connected device in developer mode.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build-tvos:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build MinimalClockTV for tvOS Simulator
+        run: |
+          xcodebuild build \
+            -project ios/Runner.xcodeproj \
+            -scheme MinimalClockTV \
+            -sdk appletvsimulator \
+            -configuration Release \
+            CODE_SIGNING_ALLOWED=NO
