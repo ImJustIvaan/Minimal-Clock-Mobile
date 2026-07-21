@@ -53,23 +53,41 @@ jobs:
             SYMROOT=build/watch_dd \
             CODE_SIGNING_ALLOWED=NO
 
+      # Package the phone-only build first (no Watch app), straight from
+      # Runner.app as `flutter build ios` produced it. The widget extension
+      # is already embedded at this point too, since it's a normal Xcode
+      # target dependency of Runner and doesn't need the separate handling
+      # the watchOS target does.
+      - name: Package IPA without Watch app
+        run: |
+          mkdir -p build/ios/ipa-no-watch/Payload
+          cp -r build/ios/iphoneos/Runner.app build/ios/ipa-no-watch/Payload/
+          cd build/ios/ipa-no-watch
+          zip -r MinimalClock-NoWatch.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MinimalClock-NoWatch.ipa
+          path: build/ios/ipa-no-watch/MinimalClock-NoWatch.ipa
+
       # SYMROOT=build/watch_dd was resolved relative to -project's directory
       # (ios/), not the repo root, so the product landed at
       # ios/build/watch_dd/... rather than build/watch_dd/...
-      - name: Embed watchOS app into Runner.app
+      - name: Embed watchOS app into a second copy of Runner.app
         run: |
-          mkdir -p build/ios/iphoneos/Runner.app/Watch
+          rm -rf build/ios/ipa-with-watch
+          mkdir -p build/ios/ipa-with-watch/Payload
+          cp -r build/ios/iphoneos/Runner.app build/ios/ipa-with-watch/Payload/
+          mkdir -p build/ios/ipa-with-watch/Payload/Runner.app/Watch
           cp -r ios/build/watch_dd/Release-watchos/MinimalClockWatch.app \
-            build/ios/iphoneos/Runner.app/Watch/
+            build/ios/ipa-with-watch/Payload/Runner.app/Watch/
 
-      - name: Package into IPA
+      - name: Package IPA with Watch app
         run: |
-          mkdir -p build/ios/ipa/Payload
-          cp -r build/ios/iphoneos/Runner.app build/ios/ipa/Payload/
-          cd build/ios/ipa
+          cd build/ios/ipa-with-watch
           zip -r MinimalClock.ipa Payload
 
       - uses: actions/upload-artifact@v4
         with:
           name: MinimalClock.ipa
-          path: build/ios/ipa/MinimalClock.ipa
+          path: build/ios/ipa-with-watch/MinimalClock.ipa
