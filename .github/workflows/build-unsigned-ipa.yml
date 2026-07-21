@@ -40,19 +40,23 @@ jobs:
       # through the iOS companion, ignoring the requested destination.
       # -target bypasses scheme/destination inference entirely and builds
       # straight from the target's own project settings (SDKROOT=watchos).
+      # -derivedDataPath requires -scheme (xcodebuild refuses it with a bare
+      # -target), so use SYMROOT instead — a plain build-setting override,
+      # which -target builds honor fine. That puts the product at
+      # $SYMROOT/$CONFIGURATION-$PLATFORM_NAME/MinimalClockWatch.app.
       - name: Build watchOS companion app
         run: |
           xcodebuild build \
             -project ios/Runner.xcodeproj \
             -target MinimalClockWatch \
             -configuration Release \
-            -derivedDataPath build/watch_dd \
+            SYMROOT=build/watch_dd \
             CODE_SIGNING_ALLOWED=NO
 
       - name: Embed watchOS app into Runner.app
         run: |
           mkdir -p build/ios/iphoneos/Runner.app/Watch
-          cp -r build/watch_dd/Build/Products/Release-watchos/MinimalClockWatch.app \
+          cp -r build/watch_dd/Release-watchos/MinimalClockWatch.app \
             build/ios/iphoneos/Runner.app/Watch/
 
       - name: Package into IPA
