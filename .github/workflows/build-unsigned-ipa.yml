@@ -31,12 +31,17 @@ jobs:
       # built in the same invocation — breaking the watchOS target, which
       # needs its own SDK. Building it as its own xcodebuild call and
       # copying the result in avoids that entirely.
+      # -sdk alone isn't reliably respected by modern Xcode for scheme-based
+      # builds of a non-default-platform target (it registered as a
+      # command-line override but the actual compile still ran against the
+      # iOS SDK). -destination is what Xcode 14+ actually uses to resolve a
+      # scheme's platform, so use that instead.
       - name: Build watchOS companion app
         run: |
           xcodebuild build \
             -project ios/Runner.xcodeproj \
             -scheme MinimalClockWatch \
-            -sdk watchos \
+            -destination 'generic/platform=watchOS' \
             -configuration Release \
             -derivedDataPath build/watch_dd \
             CODE_SIGNING_ALLOWED=NO
