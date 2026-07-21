@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AnimatedClockText extends StatefulWidget {
   final String text;
   final double fontSize;
   final Color color;
+  final String? fontFamily;
 
   const AnimatedClockText({
     super.key,
     required this.text,
     required this.fontSize,
     required this.color,
+    this.fontFamily,
   });
 
   @override
@@ -52,18 +55,20 @@ class _AnimatedClockTextState extends State<AnimatedClockText>
 
   @override
   Widget build(BuildContext context) {
+    final baseStyle = TextStyle(
+      fontSize: widget.fontSize,
+      fontWeight: FontWeight.w200,
+      color: widget.color,
+      letterSpacing: -2,
+      height: 1,
+    );
+    final style = (widget.fontFamily == null || widget.fontFamily!.isEmpty)
+        ? baseStyle
+        : GoogleFonts.getFont(widget.fontFamily!, textStyle: baseStyle);
+
     return AnimatedBuilder(
       animation: _fade,
-      builder: (_, __) => Text(
-        _displayed,
-        style: TextStyle(
-          fontSize: widget.fontSize,
-          fontWeight: FontWeight.w200,
-          color: widget.color,
-          letterSpacing: -2,
-          height: 1,
-        ),
-      ),
+      builder: (_, __) => Text(_displayed, style: style),
     );
   }
 }

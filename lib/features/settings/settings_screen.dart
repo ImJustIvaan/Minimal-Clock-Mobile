@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/models/settings_model.dart';
 import '../../core/providers/settings_provider.dart';
+import 'font_picker_screen.dart';
 import 'timezone_picker_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -65,6 +66,10 @@ class _SettingsBody extends ConsumerWidget {
                   _TimezoneRow(
                     value: settings.selectedTimezone,
                     onChanged: (v) => update(settings.copyWith(selectedTimezone: v)),
+                  ),
+                  _FontRow(
+                    value: settings.clockFontFamily,
+                    onChanged: (v) => update(settings.copyWith(clockFontFamily: v)),
                   ),
                   _SwitchRow(
                     label: '24-hour format',
@@ -228,6 +233,59 @@ class _TimezoneRow extends StatelessWidget {
                 children: [
                   Text(
                     _label(value),
+                    style: TextStyle(fontSize: 13, color: color, fontWeight: FontWeight.w300),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(Icons.expand_more, size: 16, color: color.withOpacity(0.5)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FontRow extends StatelessWidget {
+  final String value;
+  final ValueChanged<String> onChanged;
+
+  const _FontRow({required this.value, required this.onChanged});
+
+  Future<void> _openPicker(BuildContext context) async {
+    final result = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (_) => FontPickerScreen(selected: value)),
+    );
+    if (result != null) onChanged(result);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onSurface;
+    return InkWell(
+      onTap: () => _openPicker(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Clock Font',
+                style: TextStyle(fontSize: 16, color: color, fontWeight: FontWeight.w300),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                border: Border.all(color: color.withOpacity(0.15)),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    value.isEmpty ? 'Default' : value,
                     style: TextStyle(fontSize: 13, color: color, fontWeight: FontWeight.w300),
                   ),
                   const SizedBox(width: 6),
