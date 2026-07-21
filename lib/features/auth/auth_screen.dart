@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/services/supabase_service.dart';
+import '../../core/services/tv_platform_service.dart';
+import '../../shared/widgets/tv_focusable.dart';
+import 'tv_pairing_screen.dart';
 
 enum _Mode { password, magicLink }
 
@@ -19,6 +22,25 @@ class _AuthScreenState extends State<AuthScreen> {
   bool _loading = false;
   String? _error;
   String? _info;
+  bool? _isTv;
+
+  @override
+  void initState() {
+    super.initState();
+    TvPlatformService.isAndroidTv().then((isTv) {
+      if (!mounted) return;
+      setState(() => _isTv = isTv);
+      // A remote makes typing an email/password painful, so TVs go
+      // straight to the QR sign-in flow instead of the form.
+      if (isTv) _openTvPairing();
+    });
+  }
+
+  void _openTvPairing() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const TvPairingScreen()),
+    );
+  }
 
   @override
   void dispose() {
@@ -211,6 +233,19 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                   child: Text('Continue with Google', style: TextStyle(color: color)),
                 ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: _loading ? null : _openTvPairing,
+                  icon: Icon(Icons.qr_code, color: color.withOpacity(0.8)),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: color.withOpacity(0.2)),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  label: Text('Sign in with QR code', style: TextStyle(color: color)),
+                ),
               ],
             ),
           ),
@@ -264,8 +299,9 @@ class _PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return TvFocusable(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(

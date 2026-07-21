@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/countdown_provider.dart';
 import '../../core/services/notification_service.dart';
+import '../../shared/widgets/tv_focusable.dart';
 import 'countdown_detail_screen.dart';
 
 class CreateCountdownScreen extends ConsumerStatefulWidget {
@@ -102,8 +103,9 @@ class _CreateCountdownScreenState
                 ),
               ),
               const SizedBox(height: 32),
-              GestureDetector(
+              TvFocusable(
                 onTap: _pickDate,
+                borderRadius: BorderRadius.circular(12),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
                   decoration: BoxDecoration(
@@ -127,8 +129,9 @@ class _CreateCountdownScreenState
                 Text(_error!, style: const TextStyle(color: Colors.redAccent, fontSize: 13)),
               ],
               const Spacer(),
-              GestureDetector(
+              TvFocusable(
                 onTap: _saving ? null : _create,
+                borderRadius: BorderRadius.circular(12),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(

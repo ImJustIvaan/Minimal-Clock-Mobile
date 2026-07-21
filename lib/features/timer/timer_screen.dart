@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/providers/timer_provider.dart';
+import '../../shared/widgets/tv_focusable.dart';
 import 'widgets/duration_picker.dart';
 import 'widgets/timer_progress_ring.dart';
 import 'widgets/until_time_picker.dart';
@@ -139,8 +140,9 @@ class _ModeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return TvFocusable(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -239,8 +241,9 @@ class _CircleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return TvFocusable(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(size / 2),
       child: Container(
         width: size,
         height: size,
