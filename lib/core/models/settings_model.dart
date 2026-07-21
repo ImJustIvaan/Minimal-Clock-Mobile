@@ -11,6 +11,7 @@ class AppSettings {
   final bool hourlyNotifier;
   final String selectedTimezone;
   final String clockFontFamily;
+  final List<String> worldClocks;
 
   const AppSettings({
     this.themeMode = ThemeMode.system,
@@ -23,6 +24,7 @@ class AppSettings {
     this.hourlyNotifier = false,
     this.selectedTimezone = '',
     this.clockFontFamily = '',
+    this.worldClocks = const [],
   });
 
   AppSettings copyWith({
@@ -36,6 +38,7 @@ class AppSettings {
     bool? hourlyNotifier,
     String? selectedTimezone,
     String? clockFontFamily,
+    List<String>? worldClocks,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -48,6 +51,7 @@ class AppSettings {
       hourlyNotifier: hourlyNotifier ?? this.hourlyNotifier,
       selectedTimezone: selectedTimezone ?? this.selectedTimezone,
       clockFontFamily: clockFontFamily ?? this.clockFontFamily,
+      worldClocks: worldClocks ?? this.worldClocks,
     );
   }
 
@@ -62,6 +66,7 @@ class AppSettings {
         'hourlyNotifier': hourlyNotifier,
         'selectedTimezone': selectedTimezone,
         'clockFontFamily': clockFontFamily,
+        'worldClocks': worldClocks,
       };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) => AppSettings(
@@ -75,5 +80,9 @@ class AppSettings {
         hourlyNotifier: json['hourlyNotifier'] as bool? ?? false,
         selectedTimezone: json['selectedTimezone'] as String? ?? '',
         clockFontFamily: json['clockFontFamily'] as String? ?? '',
+        worldClocks: (json['worldClocks'] as List<dynamic>?)
+                ?.map((e) => e as String)
+                .toList() ??
+            const [],
       );
 }

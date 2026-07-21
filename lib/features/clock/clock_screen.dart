@@ -4,9 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:wakelock_plus/wakelock_plus.dart';
+import '../../core/models/settings_model.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/providers/ui_visibility_provider.dart';
+import '../settings/timezone_picker_screen.dart';
+import '../../shared/widgets/tv_focusable.dart';
 import 'widgets/animated_digit.dart';
+import 'widgets/world_clock_tile.dart';
 
 class ClockScreen extends ConsumerStatefulWidget {
   const ClockScreen({super.key});
@@ -43,6 +47,27 @@ class _ClockScreenState extends ConsumerState<ClockScreen> {
     } catch (_) {
       return _now;
     }
+  }
+
+  Future<void> _addCity(BuildContext context, AppSettings settings) async {
+    final picked = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) => const TimezonePickerScreen(selected: ''),
+      ),
+    );
+    if (picked == null || picked.isEmpty) return;
+    if (settings.worldClocks.contains(picked)) return;
+    ref.read(settingsProvider.notifier).save(
+          settings.copyWith(worldClocks: [...settings.worldClocks, picked]),
+        );
+  }
+
+  void _removeCity(AppSettings settings, String tzId) {
+    ref.read(settingsProvider.notifier).save(
+          settings.copyWith(
+            worldClocks: settings.worldClocks.where((z) => z != tzId).toList(),
+          ),
+        );
   }
 
   @override
@@ -157,6 +182,48 @@ class _ClockScreenState extends ConsumerState<ClockScreen> {
                                 color: color.withOpacity(0.45),
                                 fontWeight: FontWeight.w300,
                               ),
+                            ),
+                          ],
+                          if (!uiHidden) ...[
+                            const SizedBox(height: 24),
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              spacing: 10,
+                              runSpacing: 10,
+                              children: [
+                                for (final tzId in settings.worldClocks)
+                                  WorldClockTile(
+                                    tzId: tzId,
+                                    use24Hour: settings.use24Hour,
+                                    onRemove: () => _removeCity(settings, tzId),
+                                  ),
+                                TvFocusable(
+                                  onTap: () => _addCity(context, settings),
+                                  borderRadius: BorderRadius.circular(14),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      border: Border.all(color: color.withOpacity(0.2)),
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.public, size: 16, color: color.withOpacity(0.5)),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          'ADD CITY',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            letterSpacing: 1.5,
+                                            color: color.withOpacity(0.5),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ],
