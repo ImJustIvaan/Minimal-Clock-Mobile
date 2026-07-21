@@ -16,11 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # -destination (not -sdk) is what modern Xcode actually uses to
+      # resolve a scheme's platform for a non-default-platform target —
+      # see the watchOS build fix in build-unsigned-ipa.yml for why.
       - name: Build MinimalClockTV for tvOS Simulator
         run: |
           xcodebuild build \
             -project ios/Runner.xcodeproj \
             -scheme MinimalClockTV \
-            -sdk appletvsimulator \
+            -destination 'generic/platform=tvOS Simulator' \
             -configuration Release \
             CODE_SIGNING_ALLOWED=NO
