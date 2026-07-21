@@ -75,5 +75,10 @@ public final class GeneratedPluginRegistrant {
     } catch (Exception e) {
       Log.e(TAG, "Error registering plugin wakelock_plus, dev.fluttercommunity.plus.wakelock.WakelockPlusPlugin", e);
     }
+    try {
+      flutterEngine.getPlugins().add(new dev.rexios.watch_connectivity.WatchConnectivityPlugin());
+    } catch (Exception e) {
+      Log.e(TAG, "Error registering plugin watch_connectivity, dev.rexios.watch_connectivity.WatchConnectivityPlugin", e);
+    }
   }
 }

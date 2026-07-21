@@ -5,6 +5,7 @@ import 'core/providers/settings_provider.dart';
 import 'core/services/deep_link_service.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/supabase_service.dart';
+import 'core/services/watch_sync_service.dart';
 import 'core/theme/app_theme.dart';
 import 'shared/widgets/app_shell.dart';
 
@@ -26,6 +27,11 @@ void main() async {
   runApp(const ProviderScope(child: MinimumClockApp()));
 
   DeepLinkService.instance.init(navigatorKey);
+
+  // Re-push the session token to the watch whenever sign-in state changes.
+  SupabaseService.client.auth.onAuthStateChange.listen((_) {
+    WatchSyncService.instance.syncNow();
+  });
 }
 
 class MinimumClockApp extends ConsumerWidget {
