@@ -53,10 +53,13 @@ jobs:
             SYMROOT=build/watch_dd \
             CODE_SIGNING_ALLOWED=NO
 
+      # SYMROOT=build/watch_dd was resolved relative to -project's directory
+      # (ios/), not the repo root, so the product landed at
+      # ios/build/watch_dd/... rather than build/watch_dd/...
       - name: Embed watchOS app into Runner.app
         run: |
           mkdir -p build/ios/iphoneos/Runner.app/Watch
-          cp -r build/watch_dd/Release-watchos/MinimalClockWatch.app \
+          cp -r ios/build/watch_dd/Release-watchos/MinimalClockWatch.app \
             build/ios/iphoneos/Runner.app/Watch/
 
       - name: Package into IPA

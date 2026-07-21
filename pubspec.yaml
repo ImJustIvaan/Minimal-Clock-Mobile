@@ -24,6 +24,7 @@ dependencies:
   app_links: ^7.0.0
   google_fonts: ^6.2.1
   watch_connectivity: ^0.2.9
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:

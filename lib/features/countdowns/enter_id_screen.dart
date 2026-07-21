@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/countdown_provider.dart';
 import '../../core/services/countdown_repository.dart';
+import '../../shared/widgets/tv_focusable.dart';
 import 'countdown_detail_screen.dart';
 
 class EnterIdScreen extends ConsumerStatefulWidget {
@@ -89,8 +90,9 @@ class _EnterIdScreenState extends ConsumerState<EnterIdScreen> {
                 Text(_error!, style: const TextStyle(color: Colors.redAccent, fontSize: 13)),
               ],
               const SizedBox(height: 24),
-              GestureDetector(
+              TvFocusable(
                 onTap: _loading ? null : _go,
+                borderRadius: BorderRadius.circular(12),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(

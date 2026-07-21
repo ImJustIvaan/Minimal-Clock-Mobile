@@ -61,10 +61,11 @@ create index if not exists countdowns_owner_id_idx on public.countdowns (owner_i
 create index if not exists countdown_follows_user_id_idx on public.countdown_follows (user_id);
 create index if not exists countdown_follows_countdown_id_idx on public.countdown_follows (countdown_id);
 
--- Apple TV sign-in pairing: the TV shows a short random code (+ QR code
--- linking to time.ivaan.cc/pair?code=...). The user opens that link signed
--- in on their phone/computer, confirms, and the site fills in this row with
--- their session tokens. The TV polls for that code and picks the tokens up.
+-- TV sign-in pairing (Apple TV and Android TV both use this): the TV shows
+-- a short random code (+ QR code linking to time.ivaan.cc/pair?code=...).
+-- The user opens that link signed in on their phone/computer, confirms, and
+-- the site fills in this row with their session tokens. The TV polls for
+-- that code and picks the tokens up.
 -- The code itself is the capability/secret (like a password-reset link) —
 -- anyone who has it can claim the tokens once, which is why rows expire
 -- quickly and get deleted right after being claimed.

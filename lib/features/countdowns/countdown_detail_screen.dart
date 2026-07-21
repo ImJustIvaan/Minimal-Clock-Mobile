@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../core/providers/countdown_provider.dart';
 import '../../core/services/notification_service.dart';
+import '../../shared/widgets/tv_focusable.dart';
 import 'widgets/countdown_tile.dart';
 
 const String kCountdownShareBaseUrl = 'https://time.ivaan.cc/?c=';
@@ -140,8 +141,9 @@ class _CountdownDetailScreenState
                     style: TextStyle(fontSize: 14, color: color.withOpacity(0.4)),
                   ),
                   const SizedBox(height: 40),
-                  GestureDetector(
+                  TvFocusable(
                     onTap: _busy ? null : () => _toggleNotify(isOwner),
+                    borderRadius: BorderRadius.circular(24),
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
                       decoration: BoxDecoration(
@@ -175,8 +177,9 @@ class _CountdownDetailScreenState
                     ),
                   ),
                   const SizedBox(height: 24),
-                  GestureDetector(
+                  TvFocusable(
                     onTap: _copyId,
+                    borderRadius: BorderRadius.circular(4),
                     child: Text(
                       'ID: ${countdown.id}',
                       style: TextStyle(
