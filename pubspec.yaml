@@ -1,4 +1,4 @@
-name: minimum_clock
+name: minimal_clock
 description: A beautiful minimalist clock app.
 publish_to: 'none'
 version: 1.0.0+1
