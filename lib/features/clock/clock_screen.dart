@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:wakelock_plus/wakelock_plus.dart';
 import '../../core/providers/settings_provider.dart';
+import '../../core/providers/ui_visibility_provider.dart';
 import 'widgets/animated_digit.dart';
 
 class ClockScreen extends ConsumerStatefulWidget {
@@ -75,6 +76,7 @@ class _ClockScreenState extends ConsumerState<ClockScreen> {
         final fontSize = isTablet
             ? settings.clockFontSize * 1.6
             : settings.clockFontSize;
+        final uiHidden = ref.watch(uiHiddenProvider);
 
         // Custom digit display, not scrollable text — ignore the system's
         // accessibility text size so it can't blow out the fixed layout.
@@ -82,76 +84,96 @@ class _ClockScreenState extends ConsumerState<ClockScreen> {
           data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.0)),
           child: Scaffold(
           body: SafeArea(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (settings.selectedTimezone.isNotEmpty) ...[
-                      Text(
-                        settings.selectedTimezone.replaceAll('_', ' '),
-                        style: TextStyle(
-                          fontSize: 11,
-                          letterSpacing: 3,
-                          color: color.withOpacity(0.3),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                    ],
-                    if (settings.showWeekday) ...[
-                      Text(
-                        weekdayStr.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 13,
-                          letterSpacing: 4,
-                          color: color.withOpacity(0.4),
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                    ],
-                    // Clock digits with animated transitions
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        AnimatedClockText(
-                          text: timeStr,
-                          fontSize: fontSize,
-                          color: color,
-                        ),
-                        if (!settings.use24Hour && amPm.isNotEmpty) ...[
-                          const SizedBox(width: 6),
-                          Padding(
-                            padding: EdgeInsets.only(bottom: fontSize * 0.08),
-                            child: Text(
-                              amPm,
+            child: GestureDetector(
+              // While hidden, tapping anywhere brings the UI back.
+              onTap: uiHidden ? () => ref.read(uiHiddenProvider.notifier).state = false : null,
+              behavior: HitTestBehavior.opaque,
+              child: Stack(
+                children: [
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (!uiHidden && settings.selectedTimezone.isNotEmpty) ...[
+                            Text(
+                              settings.selectedTimezone.replaceAll('_', ' '),
                               style: TextStyle(
-                                fontSize: fontSize * 0.22,
-                                color: color.withOpacity(0.5),
-                                fontWeight: FontWeight.w300,
-                                letterSpacing: 1,
+                                fontSize: 11,
+                                letterSpacing: 3,
+                                color: color.withOpacity(0.3),
                               ),
                             ),
+                            const SizedBox(height: 4),
+                          ],
+                          if (!uiHidden && settings.showWeekday) ...[
+                            Text(
+                              weekdayStr.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 13,
+                                letterSpacing: 4,
+                                color: color.withOpacity(0.4),
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                          // Clock digits with animated transitions
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              AnimatedClockText(
+                                text: timeStr,
+                                fontSize: fontSize,
+                                color: color,
+                                fontFamily: settings.clockFontFamily,
+                              ),
+                              if (!settings.use24Hour && amPm.isNotEmpty) ...[
+                                const SizedBox(width: 6),
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: fontSize * 0.08),
+                                  child: Text(
+                                    amPm,
+                                    style: TextStyle(
+                                      fontSize: fontSize * 0.22,
+                                      color: color.withOpacity(0.5),
+                                      fontWeight: FontWeight.w300,
+                                      letterSpacing: 1,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
+                          if (!uiHidden && settings.showDate) ...[
+                            const SizedBox(height: 16),
+                            Text(
+                              dateStr,
+                              style: TextStyle(
+                                fontSize: 16,
+                                letterSpacing: 1,
+                                color: color.withOpacity(0.45),
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
-                    ),
-                    if (settings.showDate) ...[
-                      const SizedBox(height: 16),
-                      Text(
-                        dateStr,
-                        style: TextStyle(
-                          fontSize: 16,
-                          letterSpacing: 1,
-                          color: color.withOpacity(0.45),
-                          fontWeight: FontWeight.w300,
-                        ),
                       ),
-                    ],
-                  ],
-                ),
+                    ),
+                  ),
+                  if (!uiHidden)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: IconButton(
+                        onPressed: () => ref.read(uiHiddenProvider.notifier).state = true,
+                        icon: Icon(Icons.visibility_off_outlined, color: color.withOpacity(0.35), size: 20),
+                        tooltip: 'Hide UI',
+                      ),
+                    ),
+                ],
               ),
             ),
           ),

@@ -10,6 +10,7 @@ class AppSettings {
   final bool keepScreenAwake;
   final bool hourlyNotifier;
   final String selectedTimezone;
+  final String clockFontFamily;
 
   const AppSettings({
     this.themeMode = ThemeMode.system,
@@ -21,6 +22,7 @@ class AppSettings {
     this.keepScreenAwake = false,
     this.hourlyNotifier = false,
     this.selectedTimezone = '',
+    this.clockFontFamily = '',
   });
 
   AppSettings copyWith({
@@ -33,6 +35,7 @@ class AppSettings {
     bool? keepScreenAwake,
     bool? hourlyNotifier,
     String? selectedTimezone,
+    String? clockFontFamily,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -44,6 +47,7 @@ class AppSettings {
       keepScreenAwake: keepScreenAwake ?? this.keepScreenAwake,
       hourlyNotifier: hourlyNotifier ?? this.hourlyNotifier,
       selectedTimezone: selectedTimezone ?? this.selectedTimezone,
+      clockFontFamily: clockFontFamily ?? this.clockFontFamily,
     );
   }
 
@@ -57,6 +61,7 @@ class AppSettings {
         'keepScreenAwake': keepScreenAwake,
         'hourlyNotifier': hourlyNotifier,
         'selectedTimezone': selectedTimezone,
+        'clockFontFamily': clockFontFamily,
       };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) => AppSettings(
@@ -69,5 +74,6 @@ class AppSettings {
         keepScreenAwake: json['keepScreenAwake'] as bool? ?? false,
         hourlyNotifier: json['hourlyNotifier'] as bool? ?? false,
         selectedTimezone: json['selectedTimezone'] as String? ?? '',
+        clockFontFamily: json['clockFontFamily'] as String? ?? '',
       );
 }
