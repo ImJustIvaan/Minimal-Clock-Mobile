@@ -1,6 +1,9 @@
 import SwiftUI
-import UserNotifications
 
+// tvOS's UserNotifications support is very limited (no local notification
+// title/body/sound content, unlike iOS/watchOS) — since a TV is a
+// foreground, on-screen experience by nature, the timer just relies on the
+// on-screen "Done" display rather than a system notification.
 struct TimerView: View {
     @State private var minutes: Int = 5
     @State private var endDate: Date?
@@ -37,7 +40,6 @@ struct TimerView: View {
             }
             .buttonStyle(.card)
         }
-        .onAppear { requestNotificationPermission() }
     }
 
     private func toggle() {
@@ -48,7 +50,6 @@ struct TimerView: View {
             endDate = Date().addingTimeInterval(TimeInterval(minutes * 60))
             isRunning = true
             updateDisplay()
-            scheduleNotification(in: TimeInterval(minutes * 60))
         }
     }
 
@@ -64,19 +65,5 @@ struct TimerView: View {
         let m = Int(diff) / 60
         let s = Int(diff) % 60
         display = String(format: "%02d:%02d", m, s)
-    }
-
-    private func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
-    }
-
-    private func scheduleNotification(in seconds: TimeInterval) {
-        let content = UNMutableNotificationContent()
-        content.title = "Minimal Clock"
-        content.body = "Timer Finished"
-        content.sound = .default
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
-        let request = UNNotificationRequest(identifier: "tv_timer", content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(request)
     }
 }

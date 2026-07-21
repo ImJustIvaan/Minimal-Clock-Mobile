@@ -29,14 +29,16 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # -destination (not -sdk) is what modern Xcode actually uses to
-      # resolve a scheme's platform for a non-default-platform target —
-      # see the watchOS build fix in build-unsigned-ipa.yml for why.
-      - name: Build MinimalClockTV for tvOS Simulator
+      # -target bypasses scheme/destination inference entirely and builds
+      # straight from the target's own project settings (SDKROOT=appletvos)
+      # — see the watchOS build fix in build-unsigned-ipa.yml for why that
+      # matters. This compiles against the tvOS device SDK rather than the
+      # simulator SDK, but since this step only verifies the code compiles
+      # (no signing, no actual run), that distinction doesn't matter here.
+      - name: Build MinimalClockTV
         run: |
           xcodebuild build \
             -project ios/Runner.xcodeproj \
-            -scheme MinimalClockTV \
-            -destination 'generic/platform=tvOS Simulator' \
+            -target MinimalClockTV \
             -configuration Release \
             CODE_SIGNING_ALLOWED=NO
