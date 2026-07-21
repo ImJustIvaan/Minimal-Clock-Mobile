@@ -28,7 +28,7 @@ final class PairingManager: ObservableObject {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 2_000_000_000)
                 if Task.isCancelled { return }
-                if let token = try? await SupabaseTV.pollPairingCode(newCode), let token {
+                if let token = try? await SupabaseTV.pollPairingCode(newCode) {
                     TVSessionManager.shared.setToken(token)
                     await SupabaseTV.deletePairingCode(newCode)
                     return
