@@ -25,6 +25,28 @@ jobs:
       - name: Build unsigned iOS app
         run: flutter build ios --release --no-codesign
 
+      # Built separately from Runner (not as a project dependency), because
+      # `flutter build ios` invokes xcodebuild with an explicit -sdk
+      # iphoneos, which forces that same SDK onto any dependency target
+      # built in the same invocation — breaking the watchOS target, which
+      # needs its own SDK. Building it as its own xcodebuild call and
+      # copying the result in avoids that entirely.
+      - name: Build watchOS companion app
+        run: |
+          xcodebuild build \
+            -project ios/Runner.xcodeproj \
+            -scheme MinimalClockWatch \
+            -sdk watchos \
+            -configuration Release \
+            -derivedDataPath build/watch_dd \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Embed watchOS app into Runner.app
+        run: |
+          mkdir -p build/ios/iphoneos/Runner.app/Watch
+          cp -r build/watch_dd/Build/Products/Release-watchos/MinimalClockWatch.app \
+            build/ios/iphoneos/Runner.app/Watch/
+
       - name: Package into IPA
         run: |
           mkdir -p build/ios/ipa/Payload

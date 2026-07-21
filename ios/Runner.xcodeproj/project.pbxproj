@@ -71,17 +71,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		0FE9A8964DB0AE1F244D1D09 /* Embed Watch Content */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
-			dstSubfolderSpec = 16;
-			files = (
-				C7562E6B1D191C048923C79F /* MinimalClockWatch.app in Embed Watch Content */,
-			);
-			name = "Embed Watch Content";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -391,14 +380,12 @@
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				D668C80DB61179F2986F2FCC /* Embed Foundation Extensions */,
-				0FE9A8964DB0AE1F244D1D09 /* Embed Watch Content */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				D11AFA62279E201CE0371CD5 /* PBXTargetDependency */,
-				EE6DD02145AEDD83362DA2DC /* PBXTargetDependency */,
 			);
 			name = Runner;
 			packageProductDependencies = (
