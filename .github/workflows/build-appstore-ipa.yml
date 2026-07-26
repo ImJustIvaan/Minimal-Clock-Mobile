@@ -1,0 +1,99 @@
+name: Build App Store IPA (signed)
+
+# Produces a properly signed, App-Store-upload-ready .ipa using a real
+# Apple Distribution certificate + provisioning profiles. Does nothing
+# useful until the required secrets below are set in the repo's Settings ->
+# Secrets and variables -> Actions, so this only runs on manual dispatch,
+# not on every push, unlike the unsigned sideload workflow.
+#
+# Required secrets (all base64-encoded file contents unless noted):
+#   APPLE_TEAM_ID                       - your 10-char Apple Developer Team ID
+#   APPLE_CERTIFICATE_P12_BASE64        - Distribution .p12 certificate
+#   APPLE_CERTIFICATE_PASSWORD          - password used when exporting the .p12
+#   APPLE_KEYCHAIN_PASSWORD             - any throwaway password for the temp CI keychain
+#   APPLE_PROVISIONING_PROFILE_RUNNER_BASE64        - App Store profile for com.ImJustIvaan.MimClock
+#   APPLE_PROVISIONING_PROFILE_RUNNER_NAME          - that profile's exact name
+#   APPLE_PROVISIONING_PROFILE_WIDGET_BASE64        - App Store profile for the .MinimalClockWidget extension
+#   APPLE_PROVISIONING_PROFILE_WIDGET_NAME          - that profile's exact name
+#
+# Deliberately excludes the Watch app (same reasoning as
+# MinimalClock-NoWatch.ipa in build-unsigned-ipa.yml): the watchOS target
+# needs its own SDK handling and its own distribution provisioning profile,
+# which is worth wiring up as a separate follow-up once the base app store
+# submission path is proven out.
+on:
+  workflow_dispatch:
+
+jobs:
+  build-appstore-ipa:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Import signing certificate into a temporary keychain
+        run: |
+          KEYCHAIN_PATH="$RUNNER_TEMP/appstore-signing.keychain-db"
+          security create-keychain -p "${{ secrets.APPLE_KEYCHAIN_PASSWORD }}" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "${{ secrets.APPLE_KEYCHAIN_PASSWORD }}" "$KEYCHAIN_PATH"
+
+          echo "${{ secrets.APPLE_CERTIFICATE_P12_BASE64 }}" | base64 --decode > "$RUNNER_TEMP/dist.p12"
+          security import "$RUNNER_TEMP/dist.p12" -k "$KEYCHAIN_PATH" \
+            -P "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" \
+            -T /usr/bin/codesign -T /usr/bin/security
+
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+            -s -k "${{ secrets.APPLE_KEYCHAIN_PASSWORD }}" "$KEYCHAIN_PATH"
+
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | sed 's/"//g')
+
+      - name: Install provisioning profiles
+        run: |
+          PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
+          mkdir -p "$PROFILES_DIR"
+
+          echo "${{ secrets.APPLE_PROVISIONING_PROFILE_RUNNER_BASE64 }}" | base64 --decode \
+            > "$PROFILES_DIR/runner.mobileprovision"
+          echo "${{ secrets.APPLE_PROVISIONING_PROFILE_WIDGET_BASE64 }}" | base64 --decode \
+            > "$PROFILES_DIR/widget.mobileprovision"
+
+      - name: Generate ExportOptions.plist
+        run: |
+          cat > ios/ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store-connect</string>
+            <key>teamID</key>
+            <string>${{ secrets.APPLE_TEAM_ID }}</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.ImJustIvaan.MimClock</key>
+              <string>${{ secrets.APPLE_PROVISIONING_PROFILE_RUNNER_NAME }}</string>
+              <key>com.ImJustIvaan.MimClock.MinimalClockWidget</key>
+              <string>${{ secrets.APPLE_PROVISIONING_PROFILE_WIDGET_NAME }}</string>
+            </dict>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Build signed IPA
+        run: |
+          flutter build ipa --release \
+            --export-options-plist=ios/ExportOptions.plist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MinimalClock-AppStore.ipa
+          path: build/ios/ipa/*.ipa

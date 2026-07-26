@@ -14,6 +14,9 @@ android/captures/
 android/gradlew
 android/gradlew.bat
 android/gradle/wrapper/
+android/key.properties
+android/*.jks
+android/*.keystore
 
 # iOS
 ios/Pods/
@@ -28,6 +31,9 @@ ios/Flutter/app.zip
 ios/Flutter/flutter_assets/
 ios/ServiceDefinitions.json
 ios/Runner/GeneratedPluginRegistrant.*
+ios/*.p12
+ios/*.mobileprovision
+ios/ExportOptions.plist
 
 # Misc
 *.iml

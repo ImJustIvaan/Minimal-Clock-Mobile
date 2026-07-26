@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/auth_provider.dart';
 import '../../core/providers/countdown_provider.dart';
 import '../../core/services/supabase_service.dart';
+import '../../shared/widgets/liquid_glass.dart';
 import '../auth/auth_screen.dart';
 import 'create_countdown_screen.dart';
 import 'countdown_detail_screen.dart';
@@ -51,13 +53,19 @@ class _CountdownsList extends ConsumerWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: color,
-        foregroundColor: Theme.of(context).colorScheme.surface,
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const CreateCountdownScreen()),
+      // On iOS the tab body extends behind the floating Liquid Glass nav
+      // bar (so the blur has real content to sample), which means a plain
+      // FAB would otherwise render underneath that bar. Nudge it up.
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: Platform.isIOS ? kLiquidGlassNavClearance : 0),
+        child: FloatingActionButton(
+          backgroundColor: color,
+          foregroundColor: Theme.of(context).colorScheme.surface,
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const CreateCountdownScreen()),
+          ),
+          child: const Icon(Icons.add),
         ),
-        child: const Icon(Icons.add),
       ),
       body: SafeArea(
         child: RefreshIndicator(
@@ -83,7 +91,12 @@ class _CountdownsList extends ConsumerWidget {
                 );
               }
               return ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                padding: EdgeInsets.fromLTRB(
+                  24,
+                  8,
+                  24,
+                  8 + (Platform.isIOS ? kLiquidGlassNavClearance : 0),
+                ),
                 itemCount: items.length,
                 separatorBuilder: (_, __) => Divider(color: color.withOpacity(0.08)),
                 itemBuilder: (context, i) {

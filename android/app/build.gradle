@@ -10,6 +10,17 @@ if (localPropertiesFile.exists()) {
     localPropertiesFile.withReader("UTF-8") { reader -> localProperties.load(reader) }
 }
 
+// Real release signing for Play Store uploads. Falls back to the debug
+// keystore (installable but NOT a valid Play Store upload key) when
+// key.properties doesn't exist, so local/CI builds without a keystore
+// configured keep working exactly as before. See key.properties.example.
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+def hasReleaseKeystore = keystorePropertiesFile.exists()
+if (hasReleaseKeystore) {
+    keystorePropertiesFile.withReader("UTF-8") { reader -> keystoreProperties.load(reader) }
+}
+
 android {
     namespace "com.imjustivaan.mimclock"
     compileSdk flutter.compileSdkVersion
@@ -33,9 +44,20 @@ android {
         versionName localProperties.getProperty("flutter.versionName") ?: "1.0"
     }
 
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            release {
+                storeFile rootProject.file(keystoreProperties["storeFile"])
+                storePassword keystoreProperties["storePassword"]
+                keyAlias keystoreProperties["keyAlias"]
+                keyPassword keystoreProperties["keyPassword"]
+            }
+        }
+    }
+
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
+            signingConfig hasReleaseKeystore ? signingConfigs.release : signingConfigs.debug
         }
     }
 }

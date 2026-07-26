@@ -1,6 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
+/// Extra bottom clearance a screen's own floating content (e.g. a FAB)
+/// needs on iOS so it doesn't sit behind the floating Liquid Glass nav bar
+/// — that bar's own height (64) plus its bottom margin (12) plus a small
+/// visual gap above it.
+const double kLiquidGlassNavClearance = 88;
+
 /// A frosted, refractive surface that approximates iOS 26's "Liquid Glass"
 /// material: a blurred backdrop, a faint tinted fill, and a bright
 /// highlight along the top edge that reads as light catching curved glass.
