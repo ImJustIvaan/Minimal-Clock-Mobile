@@ -30,6 +30,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # App Store Connect now rejects uploads built with anything older
+      # than the iOS 26 SDK (Xcode 26), which isn't macos-15's default
+      # Xcode. Pin to whatever the latest stable Xcode actually installed
+      # on the runner is, rather than relying on the default.
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
