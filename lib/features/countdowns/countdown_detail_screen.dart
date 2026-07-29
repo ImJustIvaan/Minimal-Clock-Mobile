@@ -23,6 +23,7 @@ class _CountdownDetailScreenState
     extends ConsumerState<CountdownDetailScreen> {
   late Timer _timer;
   bool _busy = false;
+  final _shareButtonKey = GlobalKey();
 
   @override
   void initState() {
@@ -68,7 +69,20 @@ class _CountdownDetailScreenState
 
   void _share(String title) {
     final url = '$kCountdownShareBaseUrl${widget.countdownId}';
-    Share.share('$title — count down with me: $url');
+    // sharePositionOrigin is required on iPad, where the share sheet is
+    // presented as a popover anchored to a source rect — without it the
+    // call fails silently (no sheet, no error). iPhone doesn't need it
+    // since it presents as a bottom sheet instead, which is why this only
+    // showed up testing on iPad and not on the iPhone-only sideloaded build.
+    final box =
+        _shareButtonKey.currentContext?.findRenderObject() as RenderBox?;
+    final origin = box != null
+        ? box.localToGlobal(Offset.zero) & box.size
+        : null;
+    Share.share(
+      '$title — count down with me: $url',
+      sharePositionOrigin: origin,
+    );
   }
 
   void _copyId() {
@@ -91,6 +105,7 @@ class _CountdownDetailScreenState
       appBar: AppBar(
         actions: [
           IconButton(
+            key: _shareButtonKey,
             icon: const Icon(Icons.ios_share),
             onPressed: countdownAsync.valueOrNull == null
                 ? null
