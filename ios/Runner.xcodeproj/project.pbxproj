@@ -18,6 +18,7 @@
 		37FCEDA04BFCA496C1E1A823 /* MinimalClockWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7BB89EAF78434F7EED9A8930 /* MinimalClockWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		483AFF60AAA63347D7D3F041 /* MinimalClockWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC6F7777B1AC365400D4837 /* MinimalClockWidget.swift */; };
+		5E8620489D3547368263B9D4 /* CountdownWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C69789192CE46A6B1440A5A /* CountdownWidget.swift */; };
 		4C4B682C3C2F1634A8869C73 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FC536B593961B47CF3C13 /* SettingsView.swift */; };
 		5CE62835545407EDB892F0E5 /* gong.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0D1F597F58CD73638A9CF52D /* gong.caf */; };
 		685E1D8752DD958C1BA78D78 /* SupabaseWatchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104BF60E900B7D0EF58E3B6 /* SupabaseWatchService.swift */; };
@@ -122,6 +123,9 @@
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		7BB89EAF78434F7EED9A8930 /* MinimalClockWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MinimalClockWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CC6F7777B1AC365400D4837 /* MinimalClockWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MinimalClockWidget.swift; sourceTree = "<group>"; };
+		0C69789192CE46A6B1440A5A /* CountdownWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CountdownWidget.swift; sourceTree = "<group>"; };
+		E4C3C4C72ADC4904852D0315 /* MinimalClockWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MinimalClockWidget.entitlements; sourceTree = "<group>"; };
+		D76D01001EFE4BA5AAC6FB70 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		83396B12615E600FAE2341C4 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		834EBFD5DC9C943675F0ED7B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		8D3C38D7BDE9508575047A2A /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS26.0.sdk/System/Library/Frameworks/WatchKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -290,6 +294,7 @@
 				7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				0D1F597F58CD73638A9CF52D /* gong.caf */,
+				D76D01001EFE4BA5AAC6FB70 /* Runner.entitlements */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -316,8 +321,10 @@
 			isa = PBXGroup;
 			children = (
 				7CC6F7777B1AC365400D4837 /* MinimalClockWidget.swift */,
+				0C69789192CE46A6B1440A5A /* CountdownWidget.swift */,
 				C2909E3C771038A6457D133F /* MinimalClockWidgetBundle.swift */,
 				3BBF994488A982A5F9B009BA /* Info.plist */,
+				E4C3C4C72ADC4904852D0315 /* MinimalClockWidget.entitlements */,
 			);
 			name = MinimalClockWidget;
 			path = MinimalClockWidget;
@@ -604,6 +611,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				483AFF60AAA63347D7D3F041 /* MinimalClockWidget.swift in Sources */,
+				5E8620489D3547368263B9D4 /* CountdownWidget.swift in Sources */,
 				8A0E7FAB7A7D5668C20E6084 /* MinimalClockWidgetBundle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -796,6 +804,7 @@
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
@@ -888,6 +897,7 @@
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_ENTITLEMENTS = MinimalClockWidget/MinimalClockWidget.entitlements;
 				DEVELOPMENT_TEAM = H9UCLLTXGW;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -910,6 +920,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = MinimalClockWidget/MinimalClockWidget.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MinimalClockWidget/Info.plist;
@@ -1043,6 +1054,7 @@
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
@@ -1065,6 +1077,7 @@
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
@@ -1087,6 +1100,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = MinimalClockWidget/MinimalClockWidget.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = MinimalClockWidget/Info.plist;
