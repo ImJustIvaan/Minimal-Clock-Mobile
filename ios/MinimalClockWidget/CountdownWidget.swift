@@ -27,13 +27,13 @@ private func loadSharedCountdowns() -> [SharedCountdown] {
 }
 
 @available(iOS 17.0, *)
-struct CountdownEntity: AppEntity {
+struct CountdownEntity: AppEntity, Sendable {
     let id: String
     let title: String
     let targetDate: Date
 
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Countdown"
-    static var defaultQuery = CountdownEntityQuery()
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = "Countdown"
+    static let defaultQuery = CountdownEntityQuery()
 
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(title: "\(title)")
@@ -41,7 +41,7 @@ struct CountdownEntity: AppEntity {
 }
 
 @available(iOS 17.0, *)
-struct CountdownEntityQuery: EntityQuery {
+struct CountdownEntityQuery: EntityQuery, Sendable {
     func entities(for identifiers: [String]) async throws -> [CountdownEntity] {
         loadSharedCountdowns()
             .filter { identifiers.contains($0.id) }
@@ -81,14 +81,11 @@ struct CountdownProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: SelectCountdownIntent, in context: Context) async -> Timeline<CountdownEntry> {
-        // The view renders the remaining time with a live-updating
-        // Text(timerInterval:), so iOS keeps it ticking without new
-        // timeline entries. Refresh once a day so a stale/deleted
-        // countdown selection eventually clears itself.
-        let nextMidnight = Calendar.current.nextDate(
-            after: Date(), matching: DateComponents(hour: 0, minute: 0), matchingPolicy: .nextTime
-        ) ?? Date().addingTimeInterval(86400)
-        return Timeline(entries: [entry(for: configuration)], policy: .after(nextMidnight))
+        // The remaining-time text is a plain static string computed at
+        // entry time (not a live-ticking Text(timerInterval:)), so refresh
+        // hourly to keep it reasonably current.
+        let nextRefresh = Date().addingTimeInterval(3600)
+        return Timeline(entries: [entry(for: configuration)], policy: .after(nextRefresh))
     }
 
     private func entry(for configuration: SelectCountdownIntent) -> CountdownEntry {
@@ -114,7 +111,7 @@ struct CountdownWidgetEntryView: View {
                     .lineLimit(2)
 
                 if targetDate > Date() {
-                    Text(timerInterval: Date()...targetDate, countsDown: true)
+                    Text(remainingText(until: targetDate))
                         .font(.system(size: 28, weight: .bold, design: .rounded))
                         .minimumScaleFactor(0.5)
                         .lineLimit(1)
@@ -136,6 +133,20 @@ struct CountdownWidgetEntryView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .containerBackground(for: .widget) {
             Color(.systemBackground)
+        }
+    }
+
+    private func remainingText(until targetDate: Date) -> String {
+        let totalSeconds = max(0, Int(targetDate.timeIntervalSince(Date())))
+        let days = totalSeconds / 86400
+        let hours = (totalSeconds % 86400) / 3600
+        let minutes = (totalSeconds % 3600) / 60
+        if days > 0 {
+            return "\(days)d \(hours)h"
+        } else if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        } else {
+            return "\(minutes)m"
         }
     }
 }
