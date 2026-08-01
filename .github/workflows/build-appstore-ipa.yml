@@ -136,9 +136,12 @@ jobs:
 
       - name: Embed Watch app into the archive
         run: |
+          # SYMROOT above resolves relative to -project's directory (ios/),
+          # not the repo root, so the product lands at
+          # ios/build/watch_dd/... rather than build/watch_dd/...
           WATCH_DEST="build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Watch"
           mkdir -p "$WATCH_DEST"
-          cp -r build/watch_dd/Release-watchos/MinimalClockWatch.app "$WATCH_DEST/"
+          cp -r ios/build/watch_dd/Release-watchos/MinimalClockWatch.app "$WATCH_DEST/"
 
       - name: Export signed IPA
         run: |
