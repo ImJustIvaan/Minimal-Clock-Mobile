@@ -15,12 +15,8 @@ name: Build App Store IPA (signed)
 #   APPLE_PROVISIONING_PROFILE_RUNNER_NAME          - that profile's exact name
 #   APPLE_PROVISIONING_PROFILE_WIDGET_BASE64        - App Store profile for the .MinimalClockWidget extension
 #   APPLE_PROVISIONING_PROFILE_WIDGET_NAME          - that profile's exact name
-#
-# Deliberately excludes the Watch app (same reasoning as
-# MinimalClock-NoWatch.ipa in build-unsigned-ipa.yml): the watchOS target
-# needs its own SDK handling and its own distribution provisioning profile,
-# which is worth wiring up as a separate follow-up once the base app store
-# submission path is proven out.
+#   APPLE_PROVISIONING_PROFILE_WATCH_BASE64         - App Store profile for the .watchkitapp target
+#   APPLE_PROVISIONING_PROFILE_WATCH_NAME           - that profile's exact name
 on:
   workflow_dispatch:
 
@@ -71,6 +67,8 @@ jobs:
             > "$PROFILES_DIR/runner.mobileprovision"
           echo "${{ secrets.APPLE_PROVISIONING_PROFILE_WIDGET_BASE64 }}" | base64 --decode \
             > "$PROFILES_DIR/widget.mobileprovision"
+          echo "${{ secrets.APPLE_PROVISIONING_PROFILE_WATCH_BASE64 }}" | base64 --decode \
+            > "$PROFILES_DIR/watch.mobileprovision"
 
       - name: Generate ExportOptions.plist
         run: |
@@ -91,15 +89,54 @@ jobs:
               <string>${{ secrets.APPLE_PROVISIONING_PROFILE_RUNNER_NAME }}</string>
               <key>com.ImJustIvaan.MimClock.MinimalClockWidget</key>
               <string>${{ secrets.APPLE_PROVISIONING_PROFILE_WIDGET_NAME }}</string>
+              <key>com.ImJustIvaan.MimClock.watchkitapp</key>
+              <string>${{ secrets.APPLE_PROVISIONING_PROFILE_WATCH_NAME }}</string>
             </dict>
           </dict>
           </plist>
           EOF
 
-      - name: Build signed IPA
+      # `flutter build ipa` does archive + export as one opaque step, which
+      # leaves no way to embed the separately-built Watch app in between.
+      # So this replicates it as two explicit xcodebuild calls instead, with
+      # the Watch app copied into the archive right before export — export
+      # then re-signs it too, since its bundle ID is now listed in
+      # ExportOptions.plist's provisioningProfiles map above.
+      - name: Archive Runner
         run: |
-          flutter build ipa --release \
-            --export-options-plist=ios/ExportOptions.plist
+          xcodebuild archive \
+            -workspace ios/Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            -destination 'generic/platform=iOS'
+
+      # Built separately from the Runner archive (not as a project
+      # dependency) for the same reason as build-unsigned-ipa.yml: building
+      # it alongside Runner forces the wrong SDK onto it. -target bypasses
+      # scheme/destination inference and builds straight from the watch
+      # target's own project settings (SDKROOT=watchos, and — since this
+      # morning — CODE_SIGN_STYLE=Manual with its own App Store profile).
+      - name: Build and sign Watch app
+        run: |
+          xcodebuild build \
+            -project ios/Runner.xcodeproj \
+            -target MinimalClockWatch \
+            -configuration Release \
+            SYMROOT=build/watch_dd
+
+      - name: Embed Watch app into the archive
+        run: |
+          WATCH_DEST="build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app/Watch"
+          mkdir -p "$WATCH_DEST"
+          cp -r build/watch_dd/Release-watchos/MinimalClockWatch.app "$WATCH_DEST/"
+
+      - name: Export signed IPA
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath build/ios/archive/Runner.xcarchive \
+            -exportPath build/ios/ipa \
+            -exportOptionsPlist ios/ExportOptions.plist
 
       - uses: actions/upload-artifact@v4
         with:
