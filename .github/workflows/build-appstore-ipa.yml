@@ -96,6 +96,15 @@ jobs:
           </plist>
           EOF
 
+      # `flutter build ios`/`build ipa` normally handles CocoaPods install
+      # and Flutter's generated Xcode integration files as an internal step
+      # before ever invoking xcodebuild. Calling `xcodebuild archive`
+      # directly skips all of that, so Pods (flutter_local_notifications
+      # etc.) are never installed and the archive fails to find them. This
+      # unsigned, throwaway build's only purpose is to trigger that setup.
+      - name: Prepare CocoaPods and generated Flutter files
+        run: flutter build ios --release --no-codesign
+
       # `flutter build ipa` does archive + export as one opaque step, which
       # leaves no way to embed the separately-built Watch app in between.
       # So this replicates it as two explicit xcodebuild calls instead, with
