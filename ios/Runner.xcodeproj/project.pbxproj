@@ -18,6 +18,7 @@
 		37FCEDA04BFCA496C1E1A823 /* MinimalClockWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7BB89EAF78434F7EED9A8930 /* MinimalClockWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		483AFF60AAA63347D7D3F041 /* MinimalClockWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC6F7777B1AC365400D4837 /* MinimalClockWidget.swift */; };
+		4A67226C757C4E83AED29115 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0ADB1E8BEC334452832BC616 /* Assets.xcassets */; };
 		5E8620489D3547368263B9D4 /* CountdownWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C69789192CE46A6B1440A5A /* CountdownWidget.swift */; };
 		4C4B682C3C2F1634A8869C73 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18FC536B593961B47CF3C13 /* SettingsView.swift */; };
 		5CE62835545407EDB892F0E5 /* gong.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0D1F597F58CD73638A9CF52D /* gong.caf */; };
@@ -123,6 +124,7 @@
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		7BB89EAF78434F7EED9A8930 /* MinimalClockWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MinimalClockWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CC6F7777B1AC365400D4837 /* MinimalClockWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MinimalClockWidget.swift; sourceTree = "<group>"; };
+		0ADB1E8BEC334452832BC616 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0C69789192CE46A6B1440A5A /* CountdownWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CountdownWidget.swift; sourceTree = "<group>"; };
 		E4C3C4C72ADC4904852D0315 /* MinimalClockWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MinimalClockWidget.entitlements; sourceTree = "<group>"; };
 		D76D01001EFE4BA5AAC6FB70 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 				B3D06D40A49246784489A8C9 /* CountdownsView.swift */,
 				75500E6A37FA94756B7A2B81 /* TimerView.swift */,
 				FC27D8428A71603CC8885509 /* Info.plist */,
+				0ADB1E8BEC334452832BC616 /* Assets.xcassets */,
 			);
 			name = MinimalClockWatch;
 			path = MinimalClockWatch;
@@ -519,6 +522,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A67226C757C4E83AED29115 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
