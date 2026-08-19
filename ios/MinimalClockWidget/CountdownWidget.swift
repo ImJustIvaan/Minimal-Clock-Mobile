@@ -81,11 +81,14 @@ struct CountdownProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: SelectCountdownIntent, in context: Context) async -> Timeline<CountdownEntry> {
-        // The remaining-time text is a plain static string computed at
-        // entry time (not a live-ticking Text(timerInterval:)), so refresh
-        // hourly to keep it reasonably current.
-        let nextRefresh = Date().addingTimeInterval(3600)
-        return Timeline(entries: [entry(for: configuration)], policy: .after(nextRefresh))
+        // The view renders the remaining time with a live-updating
+        // Text(timerInterval:), so iOS keeps it ticking continuously
+        // without consuming any WidgetKit refresh budget. Refresh once a
+        // day so a stale/deleted countdown selection eventually clears.
+        let nextMidnight = Calendar.current.nextDate(
+            after: Date(), matching: DateComponents(hour: 0, minute: 0), matchingPolicy: .nextTime
+        ) ?? Date().addingTimeInterval(86400)
+        return Timeline(entries: [entry(for: configuration)], policy: .after(nextMidnight))
     }
 
     private func entry(for configuration: SelectCountdownIntent) -> CountdownEntry {
@@ -111,7 +114,7 @@ struct CountdownWidgetEntryView: View {
                     .lineLimit(2)
 
                 if targetDate > Date() {
-                    Text(remainingText(until: targetDate))
+                    Text(timerInterval: Date()...targetDate, countsDown: true)
                         .font(.system(size: 28, weight: .bold, design: .rounded))
                         .minimumScaleFactor(0.5)
                         .lineLimit(1)
@@ -133,20 +136,6 @@ struct CountdownWidgetEntryView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .containerBackground(for: .widget) {
             Color(.systemBackground)
-        }
-    }
-
-    private func remainingText(until targetDate: Date) -> String {
-        let totalSeconds = max(0, Int(targetDate.timeIntervalSince(Date())))
-        let days = totalSeconds / 86400
-        let hours = (totalSeconds % 86400) / 3600
-        let minutes = (totalSeconds % 3600) / 60
-        if days > 0 {
-            return "\(days)d \(hours)h"
-        } else if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        } else {
-            return "\(minutes)m"
         }
     }
 }
