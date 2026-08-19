@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/providers/settings_provider.dart';
+import 'core/services/countdown_repository.dart';
+import 'core/services/countdown_widget_sync_service.dart';
 import 'core/services/deep_link_service.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/supabase_service.dart';
@@ -28,9 +30,29 @@ void main() async {
 
   DeepLinkService.instance.init(navigatorKey);
 
-  // Re-push the session token to the watch whenever sign-in state changes.
+  // Push countdowns to the widget's shared storage independent of whether
+  // the Countdowns screen is ever opened — the widget's config picker
+  // otherwise only ever sees data if that screen happened to have been
+  // visited since the countdowns last changed (autoDispose Riverpod
+  // provider that only syncs as a side effect of being watched there).
+  Future<void> syncCountdownsToWidget() async {
+    try {
+      final followed = await CountdownRepository.instance.fetchMyCountdowns();
+      await CountdownWidgetSyncService.instance
+          .syncCountdowns(followed.map((f) => f.countdown).toList());
+    } catch (_) {
+      // Not signed in, offline, etc. — non-fatal, the Countdowns screen
+      // will still sync normally once it's visited.
+    }
+  }
+
+  syncCountdownsToWidget();
+
+  // Re-push the session token to the watch, and the countdowns to the
+  // widget, whenever sign-in state changes.
   SupabaseService.client.auth.onAuthStateChange.listen((_) {
     WatchSyncService.instance.syncNow();
+    syncCountdownsToWidget();
   });
 }
 
