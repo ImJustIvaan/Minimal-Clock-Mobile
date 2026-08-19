@@ -99,8 +99,13 @@ struct AnalogClockWidgetEntryView: View {
     }
 
     private func point(center: CGPoint, angle: Double, radius: CGFloat) -> CGPoint {
-        // Angle 0 points to 12 o'clock, increasing clockwise.
-        CGPoint(x: center.x + radius * sin(angle), y: center.y - radius * cos(angle))
+        // Angle 0 points to 12 o'clock, increasing clockwise. sin/cos take
+        // an explicit Double so the compiler doesn't have to guess between
+        // the Double and CGFloat overloads when radius (CGFloat) and angle
+        // (Double) mix in the same expression.
+        let dx = CGFloat(sin(angle))
+        let dy = CGFloat(cos(angle))
+        return CGPoint(x: center.x + radius * dx, y: center.y - radius * dy)
     }
 }
 
