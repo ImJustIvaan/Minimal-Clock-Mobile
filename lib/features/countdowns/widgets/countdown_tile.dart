@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../../core/models/countdown_model.dart';
+import '../../../shared/widgets/tv_focusable.dart';
 
 String formatRemaining(Duration d) {
   if (d.isNegative) return 'Ended';
@@ -18,12 +19,14 @@ class CountdownTile extends StatefulWidget {
   final Countdown countdown;
   final bool notify;
   final VoidCallback onTap;
+  final VoidCallback? onDelete;
 
   const CountdownTile({
     super.key,
     required this.countdown,
     required this.notify,
     required this.onTap,
+    this.onDelete,
   });
 
   @override
@@ -84,6 +87,21 @@ class _CountdownTileState extends State<CountdownTile> {
             if (widget.notify)
               Icon(Icons.notifications_active_outlined,
                   size: 18, color: color.withOpacity(0.4)),
+            if (widget.onDelete != null) ...[
+              const SizedBox(width: 4),
+              // Swipe-to-delete (Dismissible, in the parent list) has no
+              // D-pad equivalent, so this is the only way to delete a
+              // countdown on Android TV — always visible, not just a
+              // touch/swipe affordance.
+              TvFocusable(
+                onTap: widget.onDelete,
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Icon(Icons.delete_outline, size: 20, color: color.withOpacity(0.35)),
+                ),
+              ),
+            ],
             const SizedBox(width: 8),
             Icon(Icons.chevron_right, color: color.withOpacity(0.25)),
           ],

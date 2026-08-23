@@ -31,6 +31,40 @@ class CountdownsScreen extends ConsumerWidget {
 class _CountdownsList extends ConsumerWidget {
   const _CountdownsList();
 
+  static Future<bool> _confirmDelete(BuildContext context, bool isOwner) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(isOwner ? 'Delete countdown?' : 'Remove countdown?'),
+        content: Text(isOwner
+            ? 'This will permanently delete this countdown for everyone.'
+            : 'This will remove the countdown from your list.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(isOwner ? 'Delete' : 'Remove'),
+          ),
+        ],
+      ),
+    );
+    return confirmed ?? false;
+  }
+
+  static Future<void> _delete(WidgetRef ref, String countdownId, bool isOwner) async {
+    final repo = ref.read(countdownRepositoryProvider);
+    await NotificationService.instance.cancelCountdownNotification(countdownId);
+    if (isOwner) {
+      await repo.deleteCountdown(countdownId);
+    } else {
+      await repo.unfollow(countdownId);
+    }
+    ref.invalidate(myCountdownsProvider);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final color = Theme.of(context).colorScheme.onSurface;
@@ -113,39 +147,8 @@ class _CountdownsList extends ConsumerWidget {
                       color: Colors.red.withOpacity(0.8),
                       child: const Icon(Icons.delete_outline, color: Colors.white),
                     ),
-                    confirmDismiss: (_) async {
-                      final confirmed = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text(isOwner ? 'Delete countdown?' : 'Remove countdown?'),
-                          content: Text(isOwner
-                              ? 'This will permanently delete this countdown for everyone.'
-                              : 'This will remove the countdown from your list.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(true),
-                              child: Text(isOwner ? 'Delete' : 'Remove'),
-                            ),
-                          ],
-                        ),
-                      );
-                      return confirmed ?? false;
-                    },
-                    onDismissed: (_) async {
-                      final repo = ref.read(countdownRepositoryProvider);
-                      await NotificationService.instance
-                          .cancelCountdownNotification(item.countdown.id);
-                      if (isOwner) {
-                        await repo.deleteCountdown(item.countdown.id);
-                      } else {
-                        await repo.unfollow(item.countdown.id);
-                      }
-                      ref.invalidate(myCountdownsProvider);
-                    },
+                    confirmDismiss: (_) => _confirmDelete(context, isOwner),
+                    onDismissed: (_) => _delete(ref, item.countdown.id, isOwner),
                     child: CountdownTile(
                       countdown: item.countdown,
                       notify: item.follow.notify,
@@ -156,6 +159,14 @@ class _CountdownsList extends ConsumerWidget {
                           ),
                         ),
                       ),
+                      // Swipe-to-delete has no D-pad equivalent, so Android
+                      // TV needs this explicit, always-visible delete
+                      // button too.
+                      onDelete: () async {
+                        if (await _confirmDelete(context, isOwner)) {
+                          await _delete(ref, item.countdown.id, isOwner);
+                        }
+                      },
                     ),
                   );
                 },
