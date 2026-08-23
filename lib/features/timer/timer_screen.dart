@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/settings_provider.dart';
+import '../../core/providers/stopwatch_provider.dart';
 import '../../core/providers/timer_provider.dart';
 import '../../shared/widgets/tv_focusable.dart';
 import 'widgets/duration_picker.dart';
+import 'widgets/stopwatch_display.dart';
 import 'widgets/timer_progress_ring.dart';
 import 'widgets/until_time_picker.dart';
 
-enum _TimerInputMode { duration, until }
+enum _TimerInputMode { duration, until, stopwatch }
 
 class TimerScreen extends ConsumerStatefulWidget {
   const TimerScreen({super.key});
@@ -36,9 +38,14 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(timerProvider);
     final notifier = ref.read(timerProvider.notifier);
+    final stopwatchState = ref.watch(stopwatchProvider);
+    final stopwatchNotifier = ref.read(stopwatchProvider.notifier);
     final color = Theme.of(context).colorScheme.onSurface;
     final is24Hour = ref.watch(settingsProvider).valueOrNull?.use24Hour ?? false;
-    final isIdle = state.status == TimerStatus.idle;
+    final isStopwatch = _mode == _TimerInputMode.stopwatch;
+    final isIdle = isStopwatch
+        ? stopwatchState.status == StopwatchStatus.idle
+        : state.status == TimerStatus.idle;
 
     return Scaffold(
       body: SafeArea(
@@ -55,31 +62,39 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                 ),
                 const SizedBox(height: 24),
               ],
-              // Progress ring + time display
+              // Progress ring / stopwatch display / picker
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
-                child: !isIdle
-                    ? TimerProgressRing(
-                        key: const ValueKey('ring'),
-                        state: state,
+                child: isStopwatch
+                    ? StopwatchDisplay(
+                        key: const ValueKey('stopwatch'),
+                        elapsed: stopwatchState.elapsed,
                         color: color,
                       )
-                    : _mode == _TimerInputMode.duration
-                        ? DurationPicker(
-                            key: const ValueKey('picker'),
-                            onChanged: (d) => notifier.setDuration(d),
-                            initial: state.total,
+                    : !isIdle
+                        ? TimerProgressRing(
+                            key: const ValueKey('ring'),
+                            state: state,
+                            color: color,
                           )
-                        : UntilTimePicker(
-                            key: const ValueKey('until'),
-                            initial: _untilTime,
-                            is24Hour: is24Hour,
-                            onChanged: (t) => setState(() => _untilTime = t),
-                          ),
+                        : _mode == _TimerInputMode.duration
+                            ? DurationPicker(
+                                key: const ValueKey('picker'),
+                                onChanged: (d) => notifier.setDuration(d),
+                                initial: state.total,
+                              )
+                            : UntilTimePicker(
+                                key: const ValueKey('until'),
+                                initial: _untilTime,
+                                is24Hour: is24Hour,
+                                onChanged: (t) => setState(() => _untilTime = t),
+                              ),
               ),
               const Spacer(flex: 2),
               // Control buttons
-              _Controls(state: state, notifier: notifier, onStart: () => _start(notifier)),
+              isStopwatch
+                  ? _StopwatchControls(state: stopwatchState, notifier: stopwatchNotifier)
+                  : _Controls(state: state, notifier: notifier, onStart: () => _start(notifier)),
               const SizedBox(height: 48),
             ],
           ),
@@ -118,6 +133,12 @@ class _ModeToggle extends StatelessWidget {
             selected: mode == _TimerInputMode.until,
             color: color,
             onTap: () => onChanged(_TimerInputMode.until),
+          ),
+          _ModeButton(
+            label: 'Stopwatch',
+            selected: mode == _TimerInputMode.stopwatch,
+            color: color,
+            onTap: () => onChanged(_TimerInputMode.stopwatch),
           ),
         ],
       ),
@@ -221,6 +242,41 @@ class _Controls extends StatelessWidget {
       case TimerStatus.finished:
         n.reset();
     }
+  }
+}
+
+class _StopwatchControls extends StatelessWidget {
+  final StopwatchState state;
+  final StopwatchNotifier notifier;
+
+  const _StopwatchControls({required this.state, required this.notifier});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onSurface;
+    final running = state.status == StopwatchStatus.running;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (state.status != StopwatchStatus.idle) ...[
+          _CircleButton(
+            icon: Icons.refresh_rounded,
+            onTap: notifier.reset,
+            color: color.withOpacity(0.3),
+            size: 56,
+          ),
+          const SizedBox(width: 24),
+        ],
+        _CircleButton(
+          icon: running ? Icons.pause_rounded : Icons.play_arrow_rounded,
+          onTap: running ? notifier.pause : notifier.start,
+          color: color,
+          size: 72,
+          iconColor: Theme.of(context).colorScheme.surface,
+        ),
+      ],
+    );
   }
 }
 
