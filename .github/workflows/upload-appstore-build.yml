@@ -69,6 +69,22 @@ jobs:
             --name MinimalClock-AppStore.ipa \
             --dir build/ios/ipa
 
+      # Read the exact CFBundleVersion straight out of the IPA being
+      # uploaded, rather than trusting the repo's current pubspec.yaml —
+      # the artifact could be from an older/different run than whatever is
+      # on this workflow's checked-out commit. The processing-wait step
+      # below needs this to identify *this* build specifically.
+      - name: Read build number from IPA
+        id: version
+        run: |
+          IPA_PATH=$(ls build/ios/ipa/*.ipa | head -n1)
+          WORKDIR=$(mktemp -d)
+          unzip -q "$IPA_PATH" -d "$WORKDIR"
+          PLIST=$(find "$WORKDIR/Payload" -maxdepth 2 -name Info.plist | head -n1)
+          BUILD_NUMBER=$(plutil -extract CFBundleVersion raw "$PLIST")
+          echo "Uploading build number: $BUILD_NUMBER"
+          echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+
       - name: Upload to App Store Connect
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
@@ -96,6 +112,7 @@ jobs:
           KEY_ID: ${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}
           ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_API_ISSUER_ID }}
           APP_ID: ${{ secrets.APPSTORE_CONNECT_APP_ID }}
+          BUILD_NUMBER: ${{ steps.version.outputs.build_number }}
         run: |
           pip3 install --quiet --break-system-packages pyjwt cryptography requests
           python3 - <<'PYEOF'
@@ -106,6 +123,7 @@ jobs:
           key_id = os.environ["KEY_ID"]
           issuer_id = os.environ["ISSUER_ID"]
           app_id = os.environ["APP_ID"]
+          build_number = os.environ["BUILD_NUMBER"]
           key_path = os.path.expanduser(f"~/.appstoreconnect/private_keys/AuthKey_{key_id}.p8")
           with open(key_path) as f:
               private_key = f.read()
@@ -119,27 +137,36 @@ jobs:
                   headers={"kid": key_id},
               )
 
+          # Filter by the exact build number just uploaded, not "most
+          # recently uploaded" — right after altool succeeds, the new build
+          # can take a short while to even appear via the API, during which
+          # "most recent" would silently match some earlier, already-VALID
+          # build and report false success.
           deadline = time.time() + 30 * 60  # processing is usually a few minutes, but give it room
           last_state = None
           while time.time() < deadline:
               resp = requests.get(
                   "https://api.appstoreconnect.apple.com/v1/builds",
                   headers={"Authorization": f"Bearer {make_token()}"},
-                  params={"filter[app]": app_id, "sort": "-uploadedDate", "limit": 1},
+                  params={
+                      "filter[app]": app_id,
+                      "filter[version]": build_number,
+                      "sort": "-uploadedDate",
+                      "limit": 1,
+                  },
                   timeout=30,
               )
               resp.raise_for_status()
               data = resp.json()["data"]
               if not data:
-                  print("Build not visible to the API yet, waiting...")
+                  print(f"Build {build_number} not visible to the API yet, waiting...")
                   time.sleep(30)
                   continue
 
               build = data[0]
               state = build["attributes"]["processingState"]
-              version = build["attributes"].get("version")
               if state != last_state:
-                  print(f"Build {version}: {state}")
+                  print(f"Build {build_number}: {state}")
                   last_state = state
 
               if state == "VALID":
@@ -150,6 +177,6 @@ jobs:
                   sys.exit(1)
               time.sleep(30)
 
-          print("::error::Timed out waiting for App Store Connect to finish processing the build.")
+          print(f"::error::Timed out waiting for App Store Connect to finish processing build {build_number}.")
           sys.exit(1)
           PYEOF
