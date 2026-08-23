@@ -19,27 +19,31 @@ struct CountdownsView: View {
             } else if countdowns.isEmpty {
                 emptyState(icon: "hourglass", text: "No notified countdowns.")
             } else {
-                List(countdowns) { c in
-                    HStack(spacing: 8) {
-                        Image(systemName: "hourglass")
-                            .font(.system(size: 14))
-                            .foregroundColor(urgencyColor(for: c))
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(c.title)
-                                .font(.system(size: 14, weight: .medium))
-                                .lineLimit(1)
-                            Text(remaining(for: c))
-                                .font(.system(size: 12, design: .rounded))
-                                .monospacedDigit()
-                                .foregroundColor(.secondary)
+                NavigationStack {
+                    List(countdowns) { c in
+                        NavigationLink(destination: CountdownDetailView(countdown: c)) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "hourglass")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(urgencyColor(for: c))
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(c.title)
+                                        .font(.system(size: 14, weight: .medium))
+                                        .lineLimit(1)
+                                    Text(remaining(for: c))
+                                        .font(.system(size: 12, design: .rounded))
+                                        .monospacedDigit()
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            .padding(.vertical, 2)
                         }
-                    }
-                    .padding(.vertical, 2)
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            Task { await remove(c) }
-                        } label: {
-                            Label("Remove", systemImage: "trash")
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                Task { await remove(c) }
+                            } label: {
+                                Label("Remove", systemImage: "trash")
+                            }
                         }
                     }
                 }

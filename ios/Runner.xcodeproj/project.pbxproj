@@ -27,6 +27,7 @@
 		685E1D8752DD958C1BA78D78 /* SupabaseWatchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1104BF60E900B7D0EF58E3B6 /* SupabaseWatchService.swift */; };
 		72146D46A9BD67F54644C5F0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75500E6A37FA94756B7A2B81 /* TimerView.swift */; };
 		FDF6A378F58F0120274065BF /* StopwatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B14C6EB97470784A082C1C7F /* StopwatchView.swift */; };
+		DBBCA9CE302AA2FA0F8DA526 /* CountdownDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2C487E45D1A7DF31B71B00 /* CountdownDetailView.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		77D8CF9CE890D7342D1B91C4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11C6CA5AA9B4A04F6716764C /* Foundation.framework */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
@@ -125,6 +126,7 @@
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75500E6A37FA94756B7A2B81 /* TimerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		B14C6EB97470784A082C1C7F /* StopwatchView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StopwatchView.swift; sourceTree = "<group>"; };
+		4B2C487E45D1A7DF31B71B00 /* CountdownDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CountdownDetailView.swift; sourceTree = "<group>"; };
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
@@ -248,6 +250,7 @@
 				B3D06D40A49246784489A8C9 /* CountdownsView.swift */,
 				75500E6A37FA94756B7A2B81 /* TimerView.swift */,
 				B14C6EB97470784A082C1C7F /* StopwatchView.swift */,
+				4B2C487E45D1A7DF31B71B00 /* CountdownDetailView.swift */,
 				FC27D8428A71603CC8885509 /* Info.plist */,
 				0ADB1E8BEC334452832BC616 /* Assets.xcassets */,
 			);
@@ -595,6 +598,7 @@
 				D468D1AB3481C66D95F3637A /* CountdownsView.swift in Sources */,
 				72146D46A9BD67F54644C5F0 /* TimerView.swift in Sources */,
 				FDF6A378F58F0120274065BF /* StopwatchView.swift in Sources */,
+				DBBCA9CE302AA2FA0F8DA526 /* CountdownDetailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
