@@ -15,15 +15,27 @@ struct ClockProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<ClockEntry>) -> Void) {
-        // The view renders a live-updating Text(date, style: .time), so iOS
-        // keeps the on-screen clock ticking every second without needing a
-        // new timeline entry. Refreshing once a day is enough to keep the
-        // date line current after midnight.
-        let entry = ClockEntry(date: Date())
-        let nextMidnight = Calendar.current.nextDate(
-            after: Date(), matching: DateComponents(hour: 0, minute: 0), matchingPolicy: .nextTime
-        ) ?? Date().addingTimeInterval(86400)
-        completion(Timeline(entries: [entry], policy: .after(nextMidnight)))
+        // Text(date, style: .time) is supposed to keep ticking on-device
+        // without new entries, but in practice that live-update doesn't
+        // reliably kick in for every widget size/placement (Lock Screen,
+        // StandBy, etc.) — when it doesn't, the widget freezes at whatever
+        // time its single entry was generated, which is often right around
+        // midnight after the once-a-day reload. Generate one entry per
+        // minute instead, the same approach AnalogClockWidget uses, so the
+        // displayed time advances on a real per-minute timeline entry
+        // rather than relying on that live-style auto-refresh.
+        let now = Date()
+        let calendar = Calendar.current
+        var entries: [ClockEntry] = []
+        for minuteOffset in 0..<65 {
+            if let entryDate = calendar.date(byAdding: .minute, value: minuteOffset, to: now) {
+                entries.append(ClockEntry(date: entryDate))
+            }
+        }
+        let nextHour = calendar.nextDate(
+            after: now, matching: DateComponents(minute: 0), matchingPolicy: .nextTime
+        ) ?? now.addingTimeInterval(3600)
+        completion(Timeline(entries: entries, policy: .after(nextHour)))
     }
 }
 
@@ -33,7 +45,7 @@ struct MinimalClockWidgetEntryView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(entry.date, style: .time)
+            Text(entry.date, format: .dateTime.hour().minute())
                 .font(.system(size: family == .systemSmall ? 34 : 46, weight: .bold, design: .rounded))
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
