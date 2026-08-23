@@ -6,6 +6,7 @@ struct CountdownsView: View {
     @State private var loading = false
     @State private var errorMessage: String?
     @State private var now = Date()
+    @State private var pendingDelete: TVCountdown?
     private let refreshTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -26,12 +27,38 @@ struct CountdownsView: View {
                         Text(remaining(for: c))
                             .font(.system(size: 24, design: .monospaced))
                             .foregroundColor(.secondary)
+                        Button(role: .destructive, action: { pendingDelete = c }) {
+                            Image(systemName: "trash")
+                        }
+                        .buttonStyle(.card)
                     }
                 }
             }
         }
         .onReceive(refreshTimer) { now = $0 }
         .task { await load() }
+        .alert(
+            "Remove countdown?",
+            isPresented: Binding(get: { pendingDelete != nil }, set: { if !$0 { pendingDelete = nil } }),
+            presenting: pendingDelete
+        ) { countdown in
+            Button("Cancel", role: .cancel) {}
+            Button("Remove", role: .destructive) {
+                Task { await remove(countdown) }
+            }
+        } message: { countdown in
+            Text("This removes \"\(countdown.title)\" from your notified countdowns.")
+        }
+    }
+
+    private func remove(_ c: TVCountdown) async {
+        guard let token = session.accessToken else { return }
+        do {
+            try await SupabaseTV.unfollowCountdown(accessToken: token, countdownId: c.id)
+            countdowns.removeAll { $0.id == c.id }
+        } catch {
+            errorMessage = "Couldn't remove countdown."
+        }
     }
 
     private func remaining(for c: TVCountdown) -> String {

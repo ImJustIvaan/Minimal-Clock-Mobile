@@ -38,6 +38,7 @@
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		A23773472006D5091BF72F00 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 834EBFD5DC9C943675F0ED7B /* Foundation.framework */; };
 		A484F5E7E4FCF62E097E9591 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071105B93DD8E3A4CFD38F93 /* TimerView.swift */; };
+		050F9F870F1BE14953F1E840 /* StopwatchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BBBE0DA1544E3B5E1BC69A /* StopwatchView.swift */; };
 		BA4534BF7A5EFF429BE2B20B /* SignInQRView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0D6F2B4C6AB2DA957DDCCD /* SignInQRView.swift */; };
 		C7562E6B1D191C048923C79F /* MinimalClockWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 67B57D183AD8A177F63A7FE9 /* MinimalClockWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CCB6D0AF2672C3382D0D2A84 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33B56DC98B3859A641EFC252 /* Foundation.framework */; };
@@ -100,6 +101,7 @@
 
 /* Begin PBXFileReference section */
 		071105B93DD8E3A4CFD38F93 /* TimerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
+		A9BBBE0DA1544E3B5E1BC69A /* StopwatchView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StopwatchView.swift; sourceTree = "<group>"; };
 		09E9D35BE199995BEC7B9DC5 /* MinimalClockTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MinimalClockTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B3AA60D08293270F8008C33 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS26.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		0D1F597F58CD73638A9CF52D /* gong.caf */ = {isa = PBXFileReference; includeInIndex = 1; path = gong.caf; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 				FE0D6F2B4C6AB2DA957DDCCD /* SignInQRView.swift */,
 				E7E30BA02BB5C429B7BF7665 /* CountdownsView.swift */,
 				071105B93DD8E3A4CFD38F93 /* TimerView.swift */,
+				A9BBBE0DA1544E3B5E1BC69A /* StopwatchView.swift */,
 				A18FC536B593961B47CF3C13 /* SettingsView.swift */,
 				83396B12615E600FAE2341C4 /* Info.plist */,
 				B2081D08ACB04D6D84A699FC /* Assets.xcassets */,
@@ -604,6 +607,7 @@
 				DBB846D96A5DB573CDE59CA9 /* CountdownsView.swift in Sources */,
 				A484F5E7E4FCF62E097E9591 /* TimerView.swift in Sources */,
 				4C4B682C3C2F1634A8869C73 /* SettingsView.swift in Sources */,
+				050F9F870F1BE14953F1E840 /* StopwatchView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

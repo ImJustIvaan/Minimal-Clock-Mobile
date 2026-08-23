@@ -7,6 +7,8 @@ struct ContentView: View {
                 .tabItem { Text("Clock") }
             TimerView()
                 .tabItem { Text("Timer") }
+            StopwatchView()
+                .tabItem { Text("Stopwatch") }
             CountdownsGateView()
                 .tabItem { Text("Countdowns") }
             SettingsView()
