@@ -16,6 +16,13 @@ name: Upload App Store Build
 #   APPSTORE_CONNECT_API_ISSUER_ID       - your Issuer ID (a UUID, same page)
 #   APPSTORE_CONNECT_API_KEY_BASE64      - base64-encoded contents of the
 #                                          downloaded AuthKey_<ID>.p8 file
+#
+# Optional secret, to also wait for and confirm Apple finishes processing
+# the build after upload (skipped, with just the upload step running, if
+# unset). Find this on the app's App Information page in App Store
+# Connect — it's the numeric "Apple ID" field, not the bundle identifier:
+#   APPSTORE_CONNECT_APP_ID              - the app's numeric App Store
+#                                          Connect ID
 on:
   workflow_dispatch:
     inputs:
@@ -74,3 +81,75 @@ jobs:
             -t ios \
             --apiKey "${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}" \
             --apiIssuer "${{ secrets.APPSTORE_CONNECT_API_ISSUER_ID }}"
+
+      # altool succeeding only means Apple *accepted delivery* of the
+      # binary — it still has to finish processing (virus scan, validating
+      # entitlements/metadata, generating the dSYM index, etc.) before the
+      # build is actually usable (e.g. attachable to a TestFlight group or
+      # a release). This polls the App Store Connect API's build resource
+      # for that build's processingState until it lands on VALID (done) or
+      # FAILED/INVALID (rejected), rather than reporting "upload succeeded"
+      # while it might still fail moments later during processing.
+      - name: Wait for App Store Connect to finish processing the build
+        if: ${{ secrets.APPSTORE_CONNECT_APP_ID != '' }}
+        env:
+          KEY_ID: ${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}
+          ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_API_ISSUER_ID }}
+          APP_ID: ${{ secrets.APPSTORE_CONNECT_APP_ID }}
+        run: |
+          pip3 install --quiet --break-system-packages pyjwt cryptography requests
+          python3 - <<'PYEOF'
+          import os, time, sys
+          import jwt
+          import requests
+
+          key_id = os.environ["KEY_ID"]
+          issuer_id = os.environ["ISSUER_ID"]
+          app_id = os.environ["APP_ID"]
+          key_path = os.path.expanduser(f"~/.appstoreconnect/private_keys/AuthKey_{key_id}.p8")
+          with open(key_path) as f:
+              private_key = f.read()
+
+          def make_token():
+              now = int(time.time())
+              return jwt.encode(
+                  {"iss": issuer_id, "iat": now, "exp": now + 1200, "aud": "appstoreconnect-v1"},
+                  private_key,
+                  algorithm="ES256",
+                  headers={"kid": key_id},
+              )
+
+          deadline = time.time() + 30 * 60  # processing is usually a few minutes, but give it room
+          last_state = None
+          while time.time() < deadline:
+              resp = requests.get(
+                  "https://api.appstoreconnect.apple.com/v1/builds",
+                  headers={"Authorization": f"Bearer {make_token()}"},
+                  params={"filter[app]": app_id, "sort": "-uploadedDate", "limit": 1},
+                  timeout=30,
+              )
+              resp.raise_for_status()
+              data = resp.json()["data"]
+              if not data:
+                  print("Build not visible to the API yet, waiting...")
+                  time.sleep(30)
+                  continue
+
+              build = data[0]
+              state = build["attributes"]["processingState"]
+              version = build["attributes"].get("version")
+              if state != last_state:
+                  print(f"Build {version}: {state}")
+                  last_state = state
+
+              if state == "VALID":
+                  print("Build finished processing successfully.")
+                  sys.exit(0)
+              if state in ("FAILED", "INVALID"):
+                  print(f"::error::Build processing ended in state {state}.")
+                  sys.exit(1)
+              time.sleep(30)
+
+          print("::error::Timed out waiting for App Store Connect to finish processing the build.")
+          sys.exit(1)
+          PYEOF
