@@ -31,6 +31,16 @@ on:
           Run ID of a "Build App Store IPA (signed)" run to pull the IPA
           from. Leave blank to use that workflow's latest successful run.
         required: false
+      check_only:
+        description: >-
+          Skip the actual upload and only check/wait on App Store
+          Connect's processing status for the IPA's build number. Use this
+          to re-check a build that was already uploaded successfully —
+          re-running the real upload would fail, since Apple rejects any
+          re-delivery of a build number it already has.
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   actions: read
@@ -85,12 +95,15 @@ jobs:
           echo "Uploading build number: $BUILD_NUMBER"
           echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
 
-      - name: Upload to App Store Connect
+      - name: Install App Store Connect API key
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
           echo "${{ secrets.APPSTORE_CONNECT_API_KEY_BASE64 }}" | base64 --decode \
             > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}.p8
 
+      - name: Upload to App Store Connect
+        if: ${{ inputs.check_only != true }}
+        run: |
           IPA_PATH=$(ls build/ios/ipa/*.ipa | head -n1)
           xcrun altool --upload-app \
             -f "$IPA_PATH" \
