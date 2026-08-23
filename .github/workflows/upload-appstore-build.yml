@@ -91,7 +91,7 @@ jobs:
       # FAILED/INVALID (rejected), rather than reporting "upload succeeded"
       # while it might still fail moments later during processing.
       - name: Wait for App Store Connect to finish processing the build
-        if: ${{ secrets.APPSTORE_CONNECT_APP_ID != '' }}
+        if: ${{ env.APP_ID != '' }}
         env:
           KEY_ID: ${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}
           ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_API_ISSUER_ID }}
