@@ -16,6 +16,14 @@ private struct FollowRow: Decodable {
     let countdowns: TVCountdown?
 }
 
+private struct TokenResponse: Decodable {
+    let accessToken: String
+
+    enum CodingKeys: String, CodingKey {
+        case accessToken = "access_token"
+    }
+}
+
 private struct PairingRow: Decodable {
     let code: String
     let accessToken: String?
@@ -86,6 +94,28 @@ enum SupabaseTV {
         }
         let rows = try JSONDecoder().decode([PairingRow].self, from: data)
         return rows.first?.accessToken
+    }
+
+    /// Exchanges an Apple identity token for a Supabase session, using the
+    /// GoTrue REST endpoint directly (this service has no Supabase Swift
+    /// SDK dependency, just raw URLSession) — same operation as the phone
+    /// app's `auth.signInWithIdToken(provider: .apple, ...)`.
+    static func signInWithApple(idToken: String, nonce: String) async throws -> String {
+        var request = URLRequest(url: URL(string: "\(url)/auth/v1/token?grant_type=id_token")!)
+        request.httpMethod = "POST"
+        request.setValue(anonKey, forHTTPHeaderField: "apikey")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: [
+            "provider": "apple",
+            "id_token": idToken,
+            "nonce": nonce,
+        ])
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+            throw URLError(.badServerResponse)
+        }
+        return try JSONDecoder().decode(TokenResponse.self, from: data).accessToken
     }
 
     /// Removes the signed-in user's own follow row for a countdown — RLS

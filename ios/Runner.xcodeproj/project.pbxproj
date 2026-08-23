@@ -138,6 +138,7 @@
 		CC6B4F9E6547480E9CEB1EC5 /* AnalogClockWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnalogClockWidget.swift; sourceTree = "<group>"; };
 		E4C3C4C72ADC4904852D0315 /* MinimalClockWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MinimalClockWidget.entitlements; sourceTree = "<group>"; };
 		D76D01001EFE4BA5AAC6FB70 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		498A6E24DC0663544B8D5525 /* MinimalClockTV.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MinimalClockTV.entitlements; sourceTree = "<group>"; };
 		83396B12615E600FAE2341C4 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		834EBFD5DC9C943675F0ED7B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		8D3C38D7BDE9508575047A2A /* WatchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS26.0.sdk/System/Library/Frameworks/WatchKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -326,6 +327,7 @@
 				E7E30BA02BB5C429B7BF7665 /* CountdownsView.swift */,
 				071105B93DD8E3A4CFD38F93 /* TimerView.swift */,
 				A9BBBE0DA1544E3B5E1BC69A /* StopwatchView.swift */,
+				498A6E24DC0663544B8D5525 /* MinimalClockTV.entitlements */,
 				A18FC536B593961B47CF3C13 /* SettingsView.swift */,
 				83396B12615E600FAE2341C4 /* Info.plist */,
 				B2081D08ACB04D6D84A699FC /* Assets.xcassets */,
@@ -706,6 +708,7 @@
 		15E139703972C99D87863BF3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MinimalClockTV/MinimalClockTV.entitlements;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "Apple Distribution";
@@ -734,6 +737,7 @@
 		1E592E84A68A45BB4BE6E7A2 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MinimalClockTV/MinimalClockTV.entitlements;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -853,6 +857,7 @@
 		330C486BBE413378D793E3BC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MinimalClockTV/MinimalClockTV.entitlements;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
