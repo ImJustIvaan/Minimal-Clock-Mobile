@@ -14,12 +14,20 @@ struct TimerView: View {
             if isRunning || remaining > 0 {
                 Text(display)
                     .font(.system(size: 34, weight: .light, design: .rounded))
+                    .monospacedDigit()
                     .onReceive(tick) { _ in updateDisplay() }
             } else {
-                Text("\(Int(minutes)) min")
-                    .font(.system(size: 28, weight: .light, design: .rounded))
-                    .focusable(true)
-                    .digitalCrownRotation($minutes, from: 1, through: 180, by: 1, sensitivity: .medium)
+                VStack(spacing: 2) {
+                    Text("\(Int(minutes))")
+                        .font(.system(size: 34, weight: .light, design: .rounded))
+                        .monospacedDigit()
+                    Text("MIN")
+                        .font(.system(size: 10, weight: .medium))
+                        .kerning(1.2)
+                        .foregroundColor(.secondary)
+                }
+                .focusable(true)
+                .digitalCrownRotation($minutes, from: 1, through: 180, by: 1, sensitivity: .medium)
             }
 
             HStack(spacing: 16) {
@@ -27,12 +35,13 @@ struct TimerView: View {
                     Button(action: reset) {
                         Image(systemName: "arrow.counterclockwise")
                     }
+                    .buttonStyle(.bordered)
                 }
                 Button(action: toggle) {
                     Image(systemName: isRunning ? "pause.fill" : "play.fill")
                 }
+                .buttonStyle(.borderedProminent)
             }
-            .buttonStyle(.bordered)
         }
         .onAppear { requestNotificationPermission() }
     }

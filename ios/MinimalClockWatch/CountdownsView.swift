@@ -11,32 +11,30 @@ struct CountdownsView: View {
     var body: some View {
         Group {
             if sync.accessToken == nil {
-                Text("Sign in on your phone to see countdowns here.")
-                    .font(.system(size: 13))
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding()
+                emptyState(icon: "iphone.and.arrow.forward", text: "Sign in on your phone to see countdowns here.")
             } else if loading && countdowns.isEmpty {
                 ProgressView()
             } else if let error = errorMessage, countdowns.isEmpty {
-                Text(error)
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-                    .padding()
+                emptyState(icon: "wifi.slash", text: error)
             } else if countdowns.isEmpty {
-                Text("No notified countdowns.")
-                    .font(.system(size: 13))
-                    .foregroundColor(.secondary)
+                emptyState(icon: "hourglass", text: "No notified countdowns.")
             } else {
                 List(countdowns) { c in
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(c.title)
-                            .font(.system(size: 14, weight: .medium))
-                            .lineLimit(1)
-                        Text(remaining(for: c))
-                            .font(.system(size: 12, design: .rounded))
-                            .foregroundColor(.secondary)
+                    HStack(spacing: 8) {
+                        Image(systemName: "hourglass")
+                            .font(.system(size: 14))
+                            .foregroundColor(urgencyColor(for: c))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(c.title)
+                                .font(.system(size: 14, weight: .medium))
+                                .lineLimit(1)
+                            Text(remaining(for: c))
+                                .font(.system(size: 12, design: .rounded))
+                                .monospacedDigit()
+                                .foregroundColor(.secondary)
+                        }
                     }
+                    .padding(.vertical, 2)
                     .swipeActions(edge: .trailing) {
                         Button(role: .destructive) {
                             Task { await remove(c) }
@@ -49,6 +47,26 @@ struct CountdownsView: View {
         }
         .onReceive(refreshTimer) { now = $0 }
         .task { await load() }
+    }
+
+    private func emptyState(icon: String, text: String) -> some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.system(size: 22))
+                .foregroundColor(.secondary)
+            Text(text)
+                .font(.system(size: 13))
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding()
+    }
+
+    private func urgencyColor(for c: WatchCountdown) -> Color {
+        let diff = c.targetDate.timeIntervalSince(now)
+        if diff <= 0 { return .secondary }
+        if diff < 86400 { return .orange }
+        return .accentColor
     }
 
     private func remove(_ c: WatchCountdown) async {

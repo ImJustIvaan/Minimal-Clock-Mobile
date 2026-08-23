@@ -27,16 +27,21 @@ struct ClockView: View {
     }
 
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 6) {
             if !sync.timezoneId.isEmpty {
-                Text(sync.timezoneId.replacingOccurrences(of: "_", with: " "))
-                    .font(.system(size: 10))
+                Text(sync.timezoneId.replacingOccurrences(of: "_", with: " ").uppercased())
+                    .font(.system(size: 10, weight: .medium))
+                    .kerning(1.2)
                     .foregroundColor(.secondary)
             }
             Text(formatter.string(from: now))
-                .font(.system(size: 30, weight: .light, design: .rounded))
+                .font(.system(size: 32, weight: .light, design: .rounded))
+                .monospacedDigit()
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
+            Text(now, style: .date)
+                .font(.system(size: 12, weight: .regular))
+                .foregroundColor(.secondary)
         }
         .onReceive(timer) { now = $0 }
     }

@@ -11,6 +11,7 @@ struct StopwatchView: View {
         VStack(spacing: 10) {
             Text(display)
                 .font(.system(size: 32, weight: .light, design: .rounded))
+                .monospacedDigit()
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
                 .onReceive(tick) { _ in updateDisplay() }
