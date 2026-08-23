@@ -43,4 +43,22 @@ enum SupabaseWatch {
         let rows = try decoder.decode([FollowRow].self, from: data)
         return rows.compactMap { $0.countdowns }
     }
+
+    /// Removes the signed-in user's own follow row for a countdown — RLS
+    /// scopes this to rows where auth.uid() = user_id, so filtering by
+    /// countdown_id alone (authenticated as that user) is sufficient,
+    /// mirroring the phone app's CountdownRepository.unfollow.
+    static func unfollowCountdown(accessToken: String, countdownId: String) async throws {
+        var request = URLRequest(
+            url: URL(string: "\(url)/rest/v1/countdown_follows?countdown_id=eq.\(countdownId)")!
+        )
+        request.httpMethod = "DELETE"
+        request.setValue(anonKey, forHTTPHeaderField: "apikey")
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+            throw URLError(.badServerResponse)
+        }
+    }
 }

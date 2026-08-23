@@ -6,6 +6,7 @@ struct ContentView: View {
             ClockView()
             CountdownsView()
             TimerView()
+            StopwatchView()
         }
         .tabViewStyle(.page)
     }

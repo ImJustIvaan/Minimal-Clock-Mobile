@@ -37,11 +37,28 @@ struct CountdownsView: View {
                             .font(.system(size: 12, design: .rounded))
                             .foregroundColor(.secondary)
                     }
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            Task { await remove(c) }
+                        } label: {
+                            Label("Remove", systemImage: "trash")
+                        }
+                    }
                 }
             }
         }
         .onReceive(refreshTimer) { now = $0 }
         .task { await load() }
+    }
+
+    private func remove(_ c: WatchCountdown) async {
+        guard let token = sync.accessToken else { return }
+        do {
+            try await SupabaseWatch.unfollowCountdown(accessToken: token, countdownId: c.id)
+            countdowns.removeAll { $0.id == c.id }
+        } catch {
+            errorMessage = "Couldn't remove countdown."
+        }
     }
 
     private func remaining(for c: WatchCountdown) -> String {
