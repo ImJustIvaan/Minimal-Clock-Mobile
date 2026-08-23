@@ -92,6 +92,45 @@ class _CountdownDetailScreenState
     );
   }
 
+  Future<void> _delete(bool isOwner) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(isOwner ? 'Delete countdown?' : 'Remove countdown?'),
+        content: Text(isOwner
+            ? 'This will permanently delete this countdown for everyone.'
+            : 'This will remove the countdown from your list. You can add it back later using its ID.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(isOwner ? 'Delete' : 'Remove'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    setState(() => _busy = true);
+    try {
+      final repo = ref.read(countdownRepositoryProvider);
+      await NotificationService.instance
+          .cancelCountdownNotification(widget.countdownId);
+      if (isOwner) {
+        await repo.deleteCountdown(widget.countdownId);
+      } else {
+        await repo.unfollow(widget.countdownId);
+      }
+      ref.invalidate(myCountdownsProvider);
+      if (mounted) Navigator.of(context).pop();
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.onSurface;
@@ -101,15 +140,25 @@ class _CountdownDetailScreenState
         ref.watch(followByCountdownIdProvider(widget.countdownId));
     final userId = ref.watch(countdownRepositoryProvider).currentUserId;
 
+    final countdownValue = countdownAsync.valueOrNull;
+    final isOwner = countdownValue != null && userId == countdownValue.ownerId;
+
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
             key: _shareButtonKey,
             icon: const Icon(Icons.ios_share),
-            onPressed: countdownAsync.valueOrNull == null
+            onPressed: countdownValue == null
                 ? null
-                : () => _share(countdownAsync.value!.title),
+                : () => _share(countdownValue.title),
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            tooltip: isOwner ? 'Delete' : 'Remove',
+            onPressed: countdownValue == null || _busy
+                ? null
+                : () => _delete(isOwner),
           ),
         ],
       ),

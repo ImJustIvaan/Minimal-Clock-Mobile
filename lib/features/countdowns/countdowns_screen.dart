@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers/auth_provider.dart';
 import '../../core/providers/countdown_provider.dart';
+import '../../core/services/notification_service.dart';
 import '../../core/services/supabase_service.dart';
 import '../../shared/widgets/liquid_glass.dart';
 import '../auth/auth_screen.dart';
@@ -101,13 +102,58 @@ class _CountdownsList extends ConsumerWidget {
                 separatorBuilder: (_, __) => Divider(color: color.withOpacity(0.08)),
                 itemBuilder: (context, i) {
                   final item = items[i];
-                  return CountdownTile(
-                    countdown: item.countdown,
-                    notify: item.follow.notify,
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => CountdownDetailScreen(
-                          countdownId: item.countdown.id,
+                  final isOwner = item.countdown.ownerId ==
+                      ref.watch(countdownRepositoryProvider).currentUserId;
+                  return Dismissible(
+                    key: ValueKey(item.countdown.id),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      color: Colors.red.withOpacity(0.8),
+                      child: const Icon(Icons.delete_outline, color: Colors.white),
+                    ),
+                    confirmDismiss: (_) async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text(isOwner ? 'Delete countdown?' : 'Remove countdown?'),
+                          content: Text(isOwner
+                              ? 'This will permanently delete this countdown for everyone.'
+                              : 'This will remove the countdown from your list.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: Text(isOwner ? 'Delete' : 'Remove'),
+                            ),
+                          ],
+                        ),
+                      );
+                      return confirmed ?? false;
+                    },
+                    onDismissed: (_) async {
+                      final repo = ref.read(countdownRepositoryProvider);
+                      await NotificationService.instance
+                          .cancelCountdownNotification(item.countdown.id);
+                      if (isOwner) {
+                        await repo.deleteCountdown(item.countdown.id);
+                      } else {
+                        await repo.unfollow(item.countdown.id);
+                      }
+                      ref.invalidate(myCountdownsProvider);
+                    },
+                    child: CountdownTile(
+                      countdown: item.countdown,
+                      notify: item.follow.notify,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => CountdownDetailScreen(
+                            countdownId: item.countdown.id,
+                          ),
                         ),
                       ),
                     ),
