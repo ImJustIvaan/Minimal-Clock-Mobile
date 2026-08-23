@@ -1,0 +1,76 @@
+name: Upload App Store Build
+
+# Takes the signed IPA already produced by "Build App Store IPA (signed)"
+# and submits it to App Store Connect — without rebuilding anything. Run
+# "Build App Store IPA (signed)" first, then run this workflow.
+#
+# On hold: this workflow needs the App Store Connect API key secrets below
+# to actually run the upload step. Until they're added to this repo's
+# Settings -> Secrets and variables -> Actions, dispatching this workflow
+# will fail at the "Upload to App Store Connect" step.
+#
+# Required secrets (create a Team Key at
+# https://appstoreconnect.apple.com/access/integrations/api, App Manager
+# role or higher):
+#   APPSTORE_CONNECT_API_KEY_ID          - the key's ID (e.g. "ABCD123456")
+#   APPSTORE_CONNECT_API_ISSUER_ID       - your Issuer ID (a UUID, same page)
+#   APPSTORE_CONNECT_API_KEY_BASE64      - base64-encoded contents of the
+#                                          downloaded AuthKey_<ID>.p8 file
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: >-
+          Run ID of a "Build App Store IPA (signed)" run to pull the IPA
+          from. Leave blank to use that workflow's latest successful run.
+        required: false
+
+permissions:
+  actions: read
+
+jobs:
+  upload-appstore-build:
+    runs-on: macos-15
+    steps:
+      - name: Resolve build run to pull the IPA from
+        id: resolve
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RUN_ID="${{ inputs.run_id }}"
+          if [ -z "$RUN_ID" ]; then
+            RUN_ID=$(gh run list \
+              --repo "${{ github.repository }}" \
+              --workflow build-appstore-ipa.yml \
+              --status success \
+              --limit 1 \
+              --json databaseId \
+              --jq '.[0].databaseId')
+          fi
+          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+            echo "No successful 'Build App Store IPA (signed)' run found." >&2
+            exit 1
+          fi
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Download signed IPA artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh run download "${{ steps.resolve.outputs.run_id }}" \
+            --repo "${{ github.repository }}" \
+            --name MinimalClock-AppStore.ipa \
+            --dir build/ios/ipa
+
+      - name: Upload to App Store Connect
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "${{ secrets.APPSTORE_CONNECT_API_KEY_BASE64 }}" | base64 --decode \
+            > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}.p8
+
+          IPA_PATH=$(ls build/ios/ipa/*.ipa | head -n1)
+          xcrun altool --upload-app \
+            -f "$IPA_PATH" \
+            -t ios \
+            --apiKey "${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}" \
+            --apiIssuer "${{ secrets.APPSTORE_CONNECT_API_ISSUER_ID }}"
