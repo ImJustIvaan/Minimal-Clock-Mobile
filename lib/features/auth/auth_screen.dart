@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/services/supabase_service.dart';
 import '../../core/services/tv_platform_service.dart';
@@ -94,6 +99,50 @@ class _AuthScreenState extends State<AuthScreen> {
       setState(() => _error = e.message);
     } catch (e) {
       setState(() => _error = 'Something went wrong. Try again.');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  /// Generates a random string, then its SHA-256 hash — Apple gets the
+  /// hash (as a replay-attack nonce on their side), Supabase gets the raw
+  /// original back from us alongside the identity token so it can verify
+  /// the hash matches, per Supabase's native Sign in with Apple flow.
+  String _randomNonce([int length = 32]) {
+    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)]).join();
+  }
+
+  Future<void> _signInWithApple() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+      _info = null;
+    });
+    try {
+      final rawNonce = _randomNonce();
+      final hashedNonce = sha256.convert(utf8.encode(rawNonce)).toString();
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: hashedNonce,
+      );
+      final idToken = credential.identityToken;
+      if (idToken == null) throw Exception('No identity token from Apple');
+      await SupabaseService.client.auth.signInWithIdToken(
+        provider: OAuthProvider.apple,
+        idToken: idToken,
+        nonce: rawNonce,
+      );
+    } on SignInWithAppleAuthorizationException catch (e) {
+      if (e.code != AuthorizationErrorCode.canceled) {
+        setState(() => _error = 'Apple sign-in failed.');
+      }
+    } catch (e) {
+      setState(() => _error = 'Apple sign-in failed.');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -222,6 +271,21 @@ class _AuthScreenState extends State<AuthScreen> {
                   ],
                 ),
                 const SizedBox(height: 24),
+                if (Platform.isIOS) ...[
+                  OutlinedButton.icon(
+                    onPressed: _loading ? null : _signInWithApple,
+                    icon: Icon(Icons.apple, color: color.withOpacity(0.8)),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: color.withOpacity(0.2)),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    label: Text('Continue with Apple', style: TextStyle(color: color)),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 OutlinedButton(
                   onPressed: _loading ? null : _signInWithGoogle,
                   style: OutlinedButton.styleFrom(
