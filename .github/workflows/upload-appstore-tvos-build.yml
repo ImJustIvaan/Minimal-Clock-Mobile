@@ -1,0 +1,185 @@
+name: Upload tvOS App Store Build
+
+# Takes the signed tvOS IPA already produced by "Build tvOS App Store IPA
+# (signed)" and submits it to App Store Connect — without rebuilding
+# anything. Run that workflow first, then run this one. Mirrors
+# upload-appstore-build.yml (the iOS/phone equivalent); see that file for
+# more detail on the shared mechanics.
+#
+# Required secrets — same three App Store Connect API key secrets already
+# used by upload-appstore-build.yml (a Team Key, App Manager role or
+# higher):
+#   APPSTORE_CONNECT_API_KEY_ID
+#   APPSTORE_CONNECT_API_ISSUER_ID
+#   APPSTORE_CONNECT_API_KEY_BASE64
+#
+# Optional secret, to also wait for and confirm Apple finishes processing
+# the build (skipped if unset):
+#   APPSTORE_CONNECT_APP_ID              - the app's numeric App Store
+#                                          Connect ID (same value as for
+#                                          the iOS app — Universal Purchase
+#                                          shares one app record)
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: >-
+          Run ID of a "Build tvOS App Store IPA (signed)" run to pull the
+          IPA from. Leave blank to use that workflow's latest successful
+          run.
+        required: false
+      check_only:
+        description: >-
+          Skip the actual upload and only check/wait on App Store
+          Connect's processing status for the IPA's build number. Use this
+          to re-check a build that was already uploaded successfully —
+          re-running the real upload would fail, since Apple rejects any
+          re-delivery of a build number it already has.
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  actions: read
+
+jobs:
+  upload-appstore-tvos-build:
+    runs-on: macos-15
+    steps:
+      - name: Resolve build run to pull the IPA from
+        id: resolve
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RUN_ID="${{ inputs.run_id }}"
+          if [ -z "$RUN_ID" ]; then
+            RUN_ID=$(gh run list \
+              --repo "${{ github.repository }}" \
+              --workflow build-appstore-tvos-ipa.yml \
+              --status success \
+              --limit 1 \
+              --json databaseId \
+              --jq '.[0].databaseId')
+          fi
+          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+            echo "No successful 'Build tvOS App Store IPA (signed)' run found." >&2
+            exit 1
+          fi
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Download signed IPA artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh run download "${{ steps.resolve.outputs.run_id }}" \
+            --repo "${{ github.repository }}" \
+            --name MinimalClockTV-AppStore.ipa \
+            --dir build/ios/ipa-tvos
+
+      # Read the exact CFBundleVersion straight out of the IPA being
+      # uploaded, rather than trusting the repo's current pubspec.yaml —
+      # the artifact could be from an older/different run than whatever is
+      # on this workflow's checked-out commit.
+      - name: Read build number from IPA
+        id: version
+        run: |
+          IPA_PATH=$(ls build/ios/ipa-tvos/*.ipa | head -n1)
+          WORKDIR=$(mktemp -d)
+          unzip -q "$IPA_PATH" -d "$WORKDIR"
+          PLIST=$(find "$WORKDIR/Payload" -maxdepth 2 -name Info.plist | head -n1)
+          BUILD_NUMBER=$(plutil -extract CFBundleVersion raw "$PLIST")
+          echo "Uploading build number: $BUILD_NUMBER"
+          echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+
+      - name: Install App Store Connect API key
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "${{ secrets.APPSTORE_CONNECT_API_KEY_BASE64 }}" | base64 --decode \
+            > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}.p8
+
+      - name: Upload to App Store Connect
+        if: ${{ inputs.check_only != true }}
+        run: |
+          IPA_PATH=$(ls build/ios/ipa-tvos/*.ipa | head -n1)
+          xcrun altool --upload-app \
+            -f "$IPA_PATH" \
+            -t appletvos \
+            --apiKey "${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}" \
+            --apiIssuer "${{ secrets.APPSTORE_CONNECT_API_ISSUER_ID }}"
+
+      - name: Wait for App Store Connect to finish processing the build
+        if: ${{ env.APP_ID != '' }}
+        env:
+          KEY_ID: ${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}
+          ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_API_ISSUER_ID }}
+          APP_ID: ${{ secrets.APPSTORE_CONNECT_APP_ID }}
+          BUILD_NUMBER: ${{ steps.version.outputs.build_number }}
+        run: |
+          pip3 install --quiet --break-system-packages pyjwt cryptography requests
+          python3 - <<'PYEOF'
+          import os, time, sys
+          import jwt
+          import requests
+
+          key_id = os.environ["KEY_ID"]
+          issuer_id = os.environ["ISSUER_ID"]
+          app_id = os.environ["APP_ID"]
+          build_number = os.environ["BUILD_NUMBER"]
+          key_path = os.path.expanduser(f"~/.appstoreconnect/private_keys/AuthKey_{key_id}.p8")
+          with open(key_path) as f:
+              private_key = f.read()
+
+          def make_token():
+              now = int(time.time())
+              return jwt.encode(
+                  {"iss": issuer_id, "iat": now, "exp": now + 1200, "aud": "appstoreconnect-v1"},
+                  private_key,
+                  algorithm="ES256",
+                  headers={"kid": key_id},
+              )
+
+          # Filter by the exact build number just uploaded, not "most
+          # recently uploaded" — right after altool succeeds, the new build
+          # can take a short while to even appear via the API, during which
+          # "most recent" would silently match some earlier, already-VALID
+          # build (e.g. the iOS build under the same Universal Purchase app
+          # record) and report false success.
+          deadline = time.time() + 30 * 60
+          last_state = None
+          while time.time() < deadline:
+              resp = requests.get(
+                  "https://api.appstoreconnect.apple.com/v1/builds",
+                  headers={"Authorization": f"Bearer {make_token()}"},
+                  params={
+                      "filter[app]": app_id,
+                      "filter[version]": build_number,
+                      "filter[preReleaseVersion.platform]": "TV_OS",
+                      "sort": "-uploadedDate",
+                      "limit": 1,
+                  },
+                  timeout=30,
+              )
+              resp.raise_for_status()
+              data = resp.json()["data"]
+              if not data:
+                  print(f"tvOS build {build_number} not visible to the API yet, waiting...")
+                  time.sleep(30)
+                  continue
+
+              build = data[0]
+              state = build["attributes"]["processingState"]
+              if state != last_state:
+                  print(f"tvOS build {build_number}: {state}")
+                  last_state = state
+
+              if state == "VALID":
+                  print("Build finished processing successfully.")
+                  sys.exit(0)
+              if state in ("FAILED", "INVALID"):
+                  print(f"::error::Build processing ended in state {state}.")
+                  sys.exit(1)
+              time.sleep(30)
+
+          print(f"::error::Timed out waiting for App Store Connect to finish processing tvOS build {build_number}.")
+          sys.exit(1)
+          PYEOF
