@@ -5,12 +5,17 @@ import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:wakelock_plus/wakelock_plus.dart';
 import '../../core/models/settings_model.dart';
+import '../../core/providers/entitlement_provider.dart';
 import '../../core/providers/settings_provider.dart';
 import '../../core/providers/ui_visibility_provider.dart';
+import '../settings/paywall_screen.dart';
 import '../settings/timezone_picker_screen.dart';
 import '../../shared/widgets/tv_focusable.dart';
 import 'widgets/animated_digit.dart';
 import 'widgets/world_clock_tile.dart';
+
+/// World clock entries a free user can add before hitting the Pro paywall.
+const kFreeWorldClockLimit = 2;
 
 class ClockScreen extends ConsumerStatefulWidget {
   const ClockScreen({super.key});
@@ -50,6 +55,13 @@ class _ClockScreenState extends ConsumerState<ClockScreen> {
   }
 
   Future<void> _addCity(BuildContext context, AppSettings settings) async {
+    final isPro = ref.read(entitlementProvider).valueOrNull ?? false;
+    if (!isPro && settings.worldClocks.length >= kFreeWorldClockLimit) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const PaywallScreen()),
+      );
+      return;
+    }
     final picked = await Navigator.of(context).push<String>(
       MaterialPageRoute(
         builder: (_) => const TimezonePickerScreen(selected: ''),

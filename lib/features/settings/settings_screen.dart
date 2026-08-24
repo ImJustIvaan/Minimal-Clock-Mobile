@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/models/settings_model.dart';
+import '../../core/providers/entitlement_provider.dart';
 import '../../core/providers/settings_provider.dart';
+import '../../core/services/purchase_service.dart';
 import 'font_picker_screen.dart';
+import 'paywall_screen.dart';
 import 'timezone_picker_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -28,6 +32,7 @@ class _SettingsBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.read(settingsProvider.notifier);
     final color = Theme.of(context).colorScheme.onSurface;
+    final isPro = ref.watch(entitlementProvider).valueOrNull ?? false;
 
     void update(AppSettings s) => notifier.save(s);
 
@@ -50,6 +55,9 @@ class _SettingsBody extends ConsumerWidget {
             ),
             SliverList(
               delegate: SliverChildListDelegate([
+                _Section(label: 'MINIMAL CLOCK PRO', children: [
+                  _ProRow(isPro: isPro),
+                ]),
                 _Section(label: 'APPEARANCE', children: [
                   _SegmentedRow(
                     label: 'Theme',
@@ -113,6 +121,7 @@ class _SettingsBody extends ConsumerWidget {
                     onChanged: (v) => update(settings.copyWith(hourlyNotifier: v)),
                   ),
                 ]),
+                const _Section(label: 'SUPPORT THE DEV', children: [_TipJarRow()]),
                 _Section(label: 'CREDITS', children: const [
                   _LinkRow(
                     label: 'Made By @ImJustIvaan (a.k.a Ivaan S)',
@@ -157,6 +166,115 @@ class _Section extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           ...children,
+        ],
+      ),
+    );
+  }
+}
+
+class _ProRow extends StatelessWidget {
+  final bool isPro;
+
+  const _ProRow({required this.isPro});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onSurface;
+    return InkWell(
+      onTap: isPro
+          ? null
+          : () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const PaywallScreen()),
+              ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            Icon(
+              isPro ? Icons.workspace_premium : Icons.workspace_premium_outlined,
+              size: 18,
+              color: color.withOpacity(isPro ? 0.9 : 0.5),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                isPro ? 'You have Pro' : 'Unlock Pro',
+                style: TextStyle(fontSize: 16, color: color, fontWeight: FontWeight.w300),
+              ),
+            ),
+            if (!isPro) Icon(Icons.chevron_right, color: color.withOpacity(0.4)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TipJarRow extends StatefulWidget {
+  const _TipJarRow();
+
+  @override
+  State<_TipJarRow> createState() => _TipJarRowState();
+}
+
+class _TipJarRowState extends State<_TipJarRow> {
+  List<ProductDetails> _products = [];
+  bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final response = await PurchaseService.instance.queryProducts();
+      final tips = response.productDetails
+          .where((p) => kTipProductIds.contains(p.id))
+          .toList()
+        ..sort((a, b) => a.rawPrice.compareTo(b.rawPrice));
+      if (mounted) setState(() => _products = tips);
+    } catch (_) {
+      // Leave the list empty — the row just won't offer tip buttons.
+    }
+  }
+
+  Future<void> _buy(ProductDetails product) async {
+    setState(() => _busy = true);
+    try {
+      await PurchaseService.instance.buyTip(product);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Thank you for the support!')),
+        );
+      }
+    } catch (_) {
+      // No-op — the store's own UI already surfaces purchase failures.
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onSurface;
+    if (_products.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final product in _products)
+            OutlinedButton(
+              onPressed: _busy ? null : () => _buy(product),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: color.withOpacity(0.2)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              ),
+              child: Text(product.price, style: TextStyle(color: color)),
+            ),
         ],
       ),
     );

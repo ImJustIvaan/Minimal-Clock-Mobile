@@ -99,3 +99,25 @@ create policy "Anyone with the code can delete that row once claimed"
 
 -- Codes are single-use and short-lived; sweep anything older than 10 minutes.
 create index if not exists tv_pairing_codes_created_at_idx on public.tv_pairing_codes (created_at);
+
+-- Pro entitlement, one-time purchase (App Store / Play Billing non-consumable).
+-- Written only by the verify-purchase Edge Function (service role, bypasses
+-- RLS) after it verifies the receipt/purchase token server-to-server with
+-- Apple/Google — client purchase state is never trusted directly, since it's
+-- trivially spoofable. Readable by the owning user so the app can gate UI.
+create table if not exists public.entitlements (
+  user_id uuid primary key references auth.users (id) on delete cascade,
+  is_pro boolean not null default false,
+  pro_source text, -- 'ios' | 'android'
+  pro_purchased_at timestamptz,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.entitlements enable row level security;
+
+create policy "Users can read their own entitlement"
+  on public.entitlements for select
+  using (auth.uid() = user_id);
+
+-- No insert/update/delete policy for regular users: only the
+-- verify-purchase Edge Function (using the service-role key) writes here.

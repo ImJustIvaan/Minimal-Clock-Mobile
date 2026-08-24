@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../core/providers/entitlement_provider.dart';
+import 'paywall_screen.dart';
+
+/// Fonts available without Pro. The default (empty string, system font) is
+/// always free and handled separately from this list.
+const _kFreeFonts = ['Inter', 'Roboto Mono', 'Playfair Display'];
 
 /// Full-page font picker with search. Each row previews the font itself.
 /// Fonts are downloaded and cached by google_fonts the first time they're
 /// used, so selecting a font needs network access on its first use.
-class FontPickerScreen extends StatefulWidget {
+/// Fonts outside `_kFreeFonts` are locked behind Pro.
+class FontPickerScreen extends ConsumerStatefulWidget {
   final String selected;
 
   const FontPickerScreen({super.key, required this.selected});
 
   @override
-  State<FontPickerScreen> createState() => _FontPickerScreenState();
+  ConsumerState<FontPickerScreen> createState() => _FontPickerScreenState();
 }
 
-class _FontPickerScreenState extends State<FontPickerScreen> {
+class _FontPickerScreenState extends ConsumerState<FontPickerScreen> {
   late final List<String> _allFonts = GoogleFonts.asMap().keys.toList()..sort();
   final _ctrl = TextEditingController();
   List<String> _filtered = [];
@@ -41,6 +49,7 @@ class _FontPickerScreenState extends State<FontPickerScreen> {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.onSurface;
+    final isPro = ref.watch(entitlementProvider).valueOrNull ?? false;
     return Scaffold(
       appBar: AppBar(title: const Text('Select Font')),
       body: SafeArea(
@@ -76,26 +85,40 @@ class _FontPickerScreenState extends State<FontPickerScreen> {
                   final name = _filtered[i];
                   final isSelected = name == widget.selected;
                   final isDefault = name.isEmpty;
+                  final isLocked = !isDefault && !isPro && !_kFreeFonts.contains(name);
+                  final textColor = isLocked
+                      ? color.withOpacity(0.35)
+                      : isSelected
+                          ? color
+                          : color.withOpacity(0.75);
                   return ListTile(
                     title: Text(
                       isDefault ? 'Default' : name,
                       style: isDefault
                           ? TextStyle(
                               fontSize: 16,
-                              color: isSelected ? color : color.withOpacity(0.75),
+                              color: textColor,
                               fontWeight: isSelected ? FontWeight.w500 : FontWeight.w300,
                             )
                           : GoogleFonts.getFont(
                               name,
                               textStyle: TextStyle(
                                 fontSize: 16,
-                                color: isSelected ? color : color.withOpacity(0.75),
+                                color: textColor,
                                 fontWeight: isSelected ? FontWeight.w500 : FontWeight.w300,
                               ),
                             ),
                     ),
-                    trailing: isSelected ? Icon(Icons.check, color: color, size: 18) : null,
-                    onTap: () => Navigator.of(context).pop(name),
+                    trailing: isLocked
+                        ? Icon(Icons.lock_outline, color: color.withOpacity(0.35), size: 16)
+                        : isSelected
+                            ? Icon(Icons.check, color: color, size: 18)
+                            : null,
+                    onTap: isLocked
+                        ? () => Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => const PaywallScreen()),
+                            )
+                        : () => Navigator.of(context).pop(name),
                   );
                 },
               ),

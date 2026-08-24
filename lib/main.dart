@@ -6,6 +6,7 @@ import 'core/services/countdown_repository.dart';
 import 'core/services/countdown_widget_sync_service.dart';
 import 'core/services/deep_link_service.dart';
 import 'core/services/notification_service.dart';
+import 'core/services/purchase_service.dart';
 import 'core/services/supabase_service.dart';
 import 'core/services/watch_sync_service.dart';
 import 'core/theme/app_theme.dart';
@@ -25,6 +26,7 @@ void main() async {
 
   await SupabaseService.init();
   await NotificationService.instance.init();
+  PurchaseService.instance.init();
 
   runApp(const ProviderScope(child: MinimumClockApp()));
 
